@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "bVDRJvMo2yWq0TMAeao88CTSkcW9F9pcMAQK2tMTVn1ch61sjO4gRpc+tYnRdeWD27Nh30/61iBk4MhmxLFg2Q==",
+  "success": true,
+  "projectFilePath": "E:\\Stuff\\Git\\game_of_life_godot_f-sharp\\Game Of Life Godot F-sharp.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\pbrun\\.nuget\\packages\\fsharp.core\\7.0.300\\fsharp.core.7.0.300.nupkg.sha512",
+    "C:\\Users\\pbrun\\.nuget\\packages\\godot.sourcegenerators\\4.0.3\\godot.sourcegenerators.4.0.3.nupkg.sha512",
+    "C:\\Users\\pbrun\\.nuget\\packages\\godotsharp\\4.0.3\\godotsharp.4.0.3.nupkg.sha512",
+    "C:\\Users\\pbrun\\.nuget\\packages\\godotsharpeditor\\4.0.3\\godotsharpeditor.4.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

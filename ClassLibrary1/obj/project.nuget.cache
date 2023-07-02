@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "dm0m7rgXjjGKV1TcqCPWxWXusmRFc1gkpuPmkXJsxFbXditdCMG2nJvthVgTcM2qCu3ulQlsBQqlXf0FKomOaA==",
+  "success": true,
+  "projectFilePath": "E:\\Stuff\\Git\\game_of_life_godot_f-sharp\\ClassLibrary1\\ClassLibrary1.fsproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\pbrun\\.nuget\\packages\\fsharp.core\\7.0.300\\fsharp.core.7.0.300.nupkg.sha512"
+  ],
+  "logs": []
+}

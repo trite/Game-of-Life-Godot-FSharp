@@ -1,0 +1,11 @@
+E:\Stuff\Git\game_of_life_godot_f-sharp\FsLib\.godot\mono\temp\bin\Debug\FsLib.deps.json
+E:\Stuff\Git\game_of_life_godot_f-sharp\FsLib\.godot\mono\temp\bin\Debug\FsLib.dll
+E:\Stuff\Git\game_of_life_godot_f-sharp\FsLib\.godot\mono\temp\bin\Debug\FsLib.pdb
+E:\Stuff\Git\game_of_life_godot_f-sharp\FsLib\.godot\mono\temp\bin\Debug\FsLib.xml
+E:\Stuff\Git\game_of_life_godot_f-sharp\FsLib\.godot\mono\temp\obj\Debug\FsLib.fsproj.AssemblyReference.cache
+E:\Stuff\Git\game_of_life_godot_f-sharp\FsLib\.godot\mono\temp\obj\Debug\FsLib.AssemblyInfoInputs.cache
+E:\Stuff\Git\game_of_life_godot_f-sharp\FsLib\.godot\mono\temp\obj\Debug\FsLib.AssemblyInfo.fs
+E:\Stuff\Git\game_of_life_godot_f-sharp\FsLib\.godot\mono\temp\obj\Debug\FsLib.fsproj.CoreCompileInputs.cache
+E:\Stuff\Git\game_of_life_godot_f-sharp\FsLib\.godot\mono\temp\obj\Debug\FsLib.dll
+E:\Stuff\Git\game_of_life_godot_f-sharp\FsLib\.godot\mono\temp\obj\Debug\FsLib.xml
+E:\Stuff\Git\game_of_life_godot_f-sharp\FsLib\.godot\mono\temp\obj\Debug\FsLib.pdb

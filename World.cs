@@ -5,11 +5,11 @@ using System.Linq;
 public partial class World : Node2D
 {
 	private Sprite2D? cell = null;
-    private Color aliveColor;
+	private Color aliveColor;
 	private Godot.Collections.Dictionary cells = new Godot.Collections.Dictionary();
 
-    // Called when the node enters the scene tree for the first time.
-    public override void _Ready()
+	// Called when the node enters the scene tree for the first time.
+	public override void _Ready()
 	{
 		GD.Print(FsLib.Say.hello("World"));
 
@@ -31,8 +31,8 @@ public partial class World : Node2D
 	{
 	}
 
-    public override void _UnhandledInput(InputEvent @event)
-    {
+	public override void _UnhandledInput(InputEvent @event)
+	{
 		if (@event is InputEventMouseButton mouseButton)
 		{
 			if (mouseButton.ButtonIndex == MouseButton.Left && mouseButton.Pressed)
@@ -40,7 +40,7 @@ public partial class World : Node2D
 
 			}
 		}
-    }
+	}
 
 	public void PlaceCell(Vector2 pos)
 	{

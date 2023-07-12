@@ -1,2 +1,0 @@
-﻿58044
-C:/stuff/Godot/GodotSharp/Godot_v4.0.3-stable_mono_win64.exe

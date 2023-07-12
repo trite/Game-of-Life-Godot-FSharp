@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\Stuff\\Git\\game_of_life_godot_f-sharp\\Game Of Life Godot F-sharp.csproj": {}
+    "e:\\Stuff\\Git\\game_of_life_godot_f-sharp\\Game Of Life Godot F-sharp.csproj": {}
   },
   "projects": {
-    "E:\\Stuff\\Git\\game_of_life_godot_f-sharp\\FsLib\\FsLib.fsproj": {
+    "e:\\Stuff\\Git\\game_of_life_godot_f-sharp\\FsLib\\FsLib.fsproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Stuff\\Git\\game_of_life_godot_f-sharp\\FsLib\\FsLib.fsproj",
+        "projectUniqueName": "e:\\Stuff\\Git\\game_of_life_godot_f-sharp\\FsLib\\FsLib.fsproj",
         "projectName": "FsLib",
-        "projectPath": "E:\\Stuff\\Git\\game_of_life_godot_f-sharp\\FsLib\\FsLib.fsproj",
+        "projectPath": "e:\\Stuff\\Git\\game_of_life_godot_f-sharp\\FsLib\\FsLib.fsproj",
         "packagesPath": "C:\\Users\\pbrun\\.nuget\\packages\\",
-        "outputPath": "E:\\Stuff\\Git\\game_of_life_godot_f-sharp\\FsLib\\.godot\\mono\\temp\\obj\\",
+        "outputPath": "e:\\Stuff\\Git\\game_of_life_godot_f-sharp\\FsLib\\.godot\\mono\\temp\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Users\\pbrun\\AppData\\Roaming\\Godot\\mono\\GodotNuGetFallbackFolder"
@@ -82,14 +82,14 @@
         }
       }
     },
-    "E:\\Stuff\\Git\\game_of_life_godot_f-sharp\\Game Of Life Godot F-sharp.csproj": {
+    "e:\\Stuff\\Git\\game_of_life_godot_f-sharp\\Game Of Life Godot F-sharp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Stuff\\Git\\game_of_life_godot_f-sharp\\Game Of Life Godot F-sharp.csproj",
+        "projectUniqueName": "e:\\Stuff\\Git\\game_of_life_godot_f-sharp\\Game Of Life Godot F-sharp.csproj",
         "projectName": "Game Of Life Godot F-sharp",
-        "projectPath": "E:\\Stuff\\Git\\game_of_life_godot_f-sharp\\Game Of Life Godot F-sharp.csproj",
+        "projectPath": "e:\\Stuff\\Git\\game_of_life_godot_f-sharp\\Game Of Life Godot F-sharp.csproj",
         "packagesPath": "C:\\Users\\pbrun\\.nuget\\packages\\",
-        "outputPath": "E:\\Stuff\\Git\\game_of_life_godot_f-sharp\\.godot\\mono\\temp\\obj\\",
+        "outputPath": "e:\\Stuff\\Git\\game_of_life_godot_f-sharp\\.godot\\mono\\temp\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Users\\pbrun\\AppData\\Roaming\\Godot\\mono\\GodotNuGetFallbackFolder"
@@ -110,8 +110,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "E:\\Stuff\\Git\\game_of_life_godot_f-sharp\\FsLib\\FsLib.fsproj": {
-                "projectPath": "E:\\Stuff\\Git\\game_of_life_godot_f-sharp\\FsLib\\FsLib.fsproj"
+              "e:\\Stuff\\Git\\game_of_life_godot_f-sharp\\FsLib\\FsLib.fsproj": {
+                "projectPath": "e:\\Stuff\\Git\\game_of_life_godot_f-sharp\\FsLib\\FsLib.fsproj"
               }
             }
           }

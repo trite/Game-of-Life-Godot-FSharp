@@ -49,9 +49,6 @@ module World =
 
         this.GetNode<Camera2D>("Camera").Zoom <- new Vector2(zoom, zoom)
 
-    // zoom <- zoom + delta
-    // this.Scale <- new Vector2(zoom, zoom)
-
     let removeCell (this: Node2D) (pos: Vector2) : unit =
         let gridPosition = pos |> getGridPosition
 
@@ -103,11 +100,3 @@ Zoom: %f"
                 pos
                 gridPos
                 zoom
-
-
-
-
-
-
-// this.GetGlobalMousePosition() |> placeCell this
-// | :?

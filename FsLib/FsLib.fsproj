@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <Compile Include="World.fs" />
-    <Compile Include="Library.fs" />
   </ItemGroup>
 
 </Project>

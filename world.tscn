@@ -13,10 +13,16 @@ script = ExtResource("1_npg0p")
 [node name="Cell" type="Sprite2D" parent="."]
 modulate = Color(0.356403, 0.751441, 0.46951, 1)
 texture = SubResource("CompressedTexture2D_x7iow")
-offset = Vector2(576, 324)
 
 [node name="Wall" type="CanvasLayer" parent="."]
 
 [node name="Status" type="Label" parent="Wall"]
 offset_right = 40.0
 offset_bottom = 23.0
+
+[node name="DebugInfo" type="Label" parent="Wall"]
+offset_left = 6.0
+offset_top = 373.0
+offset_right = 653.0
+offset_bottom = 644.0
+text = "Blah"

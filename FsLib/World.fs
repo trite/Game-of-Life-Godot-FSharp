@@ -3,9 +3,6 @@
 open Godot
 open System
 
-
-
-
 module World =
     let mutable cell: Sprite2D option = None
 
@@ -20,8 +17,7 @@ module World =
 
     let cellSize = 32.0f
 
-    // let mutable thisNode: Node2D option = None
-
+    let mutable running: bool = false
 
     let NullableToOption (n: Nullable<_>) =
         if n.HasValue then Some n.Value else None
@@ -61,6 +57,8 @@ module World =
     let _ready (this: Node2D) : unit =
         cell <- Some(this.GetNode<Sprite2D>("Cell"))
 
+        running <- false
+
         match cell with
         | None -> failwith "Could not find the `Cell` node!"
         | Some(c) ->
@@ -82,7 +80,7 @@ module World =
             | MouseButton.WheelDown, _ -> changeZoom this zoomStep
             | MouseButton.WheelUp, _ -> changeZoom this -zoomStep
             | _ -> ()
-        // | IsActionPressed "ui_accept" ->
+        | IsActionPressed "ui_accept" -> running <- not running
         | _ -> ()
 
     let _process (this: Node2D) (delta: double) : unit =
@@ -96,7 +94,9 @@ module World =
             sprintf
                 "MousePosition: %A
 GridPosition: %A
-Zoom: %f"
+Zoom: %f
+Running: %b"
                 pos
                 gridPos
                 zoom
+                running

@@ -26,3 +26,9 @@ offset_top = 373.0
 offset_right = 653.0
 offset_bottom = 644.0
 text = "Blah"
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.001
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

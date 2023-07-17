@@ -53,32 +53,69 @@ module Cells =
                 | None -> Some({ status = Dead; position = pos })
             ))
 
-    let getCellNextStatus (pos: position) (Cells(cells): Cells) : cellStatus =
-        [ { x = pos.x - 1; y = pos.y - 1 }
-          { x = pos.x - 1; y = pos.y }
-          { x = pos.x - 1; y = pos.y + 1 }
-          { x = pos.x; y = pos.y - 1 }
-          { x = pos.x; y = pos.y + 1 }
-          { x = pos.x + 1; y = pos.y - 1 }
-          { x = pos.x + 1; y = pos.y }
-          { x = pos.x + 1; y = pos.y + 1 } ]
+    let getCellNextStatus (pos: position) (cells) =
+        let positions =
+            [ { x = pos.x - 1; y = pos.y - 1 }
+              { x = pos.x - 1; y = pos.y }
+              { x = pos.x - 1; y = pos.y + 1 }
+              { x = pos.x; y = pos.y - 1 }
+              { x = pos.x; y = pos.y + 1 }
+              { x = pos.x + 1; y = pos.y - 1 }
+              { x = pos.x + 1; y = pos.y }
+              { x = pos.x + 1; y = pos.y + 1 } ]
+
+        positions
         |> List.map (fun p -> Map.tryFind p cells)
         |> List.choose id
         |> List.filter (fun c -> c.status = Alive)
         |> List.length
         |> (function
-        | 2 -> cells[pos].status
-        // | 2
+        // | 2 -> cells[pos].status
+        | 2 -> if cells.ContainsKey(pos) then cells[pos].status else Dead
         | 3 -> Alive
         | _ -> Dead)
+        |> (fun x -> (x, positions))
 
-    let getCellsNextStatus (cells: Cells) : Cells =
-        cells
-        |> map (
-            Map.map (fun _ c ->
-                { c with
-                    status = getCellNextStatus c.position (cells) })
-        )
+    let getCellsNextStatus (Cells(cells): Cells) =
+        let (updatedCells, extrasToCheck) =
+            cells
+            |> Map.toList
+            |> List.filter (fun (_, c) -> c.status = Alive)
+            |> List.map (fun (p, c) ->
+                let (status, positions) = getCellNextStatus c.position cells
+                ((p, { c with status = status }), positions))
+            |> List.unzip
+
+        let extras =
+            extrasToCheck
+            |> List.concat
+            |> List.distinct
+            |> List.filter (fun p -> not (Map.containsKey p cells))
+            |> List.map (fun p ->
+                let (status, _) = getCellNextStatus p cells
+                (p, { status = status; position = p }))
+            |> List.filter (fun (_, c) -> c.status = Alive)
+
+        (updatedCells @ extras)
+        |> Map.ofList
+        |> Cells
+        |> (fun x -> (x, extras |> List.map fst))
+
+
+
+    // |> Map.map (fun _ c ->
+    //     let (status, positions) = getCellNextStatus c.position cells
+    //     ({ c with status = status }, positions))
+    // ({ c with
+    //     status = getCellNextStatus c.position cells },
+    //  ()))
+    // cells
+    // |> map (
+    //     Map.map (fun _ c ->
+    //         ({ c with
+    //             status = getCellNextStatus c.position (cells) },
+    //          ()))
+    // )
 
     let positions (Cells(cells): Cells) : position list =
         cells |> Map.toList |> List.map fst

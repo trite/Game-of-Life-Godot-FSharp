@@ -164,8 +164,11 @@ Running: %b"
 
 let _runSimulationStep (this: Node2D) : unit =
     if running then
-        let newCells = cells |> Grid.Cells.getCellsNextStatus
-        cells <- newCells
-        // cells <- cells |> Grid.Cells.getCellsNextStatus
+        // Need to get the list of updated cells and then add any new ones
+        //   that spontaneously came into existence
+        let (updatedCells, newCells) = cells |> Grid.Cells.getCellsNextStatus
+        cells <- updatedCells
+        newCells |> List.iter (fun c -> upsertCell this (positionToVector c))
+
         reconcileGodotCells this
-        running <- false
+// running <- false

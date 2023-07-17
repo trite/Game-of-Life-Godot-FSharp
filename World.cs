@@ -9,8 +9,8 @@ public partial class World : Node2D
   // Called when the node enters the scene tree for the first time.
   public override void _Ready()
   {
-    // FsLib.World.GetNode<Timer>("Timer");
-    GetNode<Timer>("Timer").Timeout += () => FsLib.World._runSimulationStep(this);
+    // If wiring up timer:
+    // GetNode<Timer>("Timer").Timeout += () => FsLib.World._runSimulationStep(this);
     FsLib.World._ready(this);
   }
 

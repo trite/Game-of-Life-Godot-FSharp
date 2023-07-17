@@ -20,8 +20,14 @@ let zoomStep = 0.1f
 
 let cellSize = 32.0f
 
-let mutable running: bool = false
+// let mutable running: bool = false
 
+type runMode =
+    | Running
+    | SingleFrame
+    | Paused
+
+let mutable running: runMode = Paused
 
 let NullableToOption (n: Nullable<_>) =
     if n.HasValue then Some n.Value else None
@@ -85,7 +91,7 @@ let markCellDead (this: Node2D) (pos: Vector2) : unit =
 let _ready (this: Node2D) : unit =
     cell <- Some(this.GetNode<Sprite2D>("Cell"))
 
-    running <- false
+    running <- Paused
 
     match cell with
     | None -> failwith "Could not find the `Cell` node!"
@@ -117,8 +123,32 @@ let _unhandledInput (this: Node2D) (event: InputEvent) : unit =
             let mutable cameraNode = this.GetNode<Camera2D>("Camera")
             cameraNode.Offset <- cameraNode.Offset - e.Relative
         | _ -> ()
-    | IsActionPressed "ui_accept" -> running <- not running
+    | IsActionPressed "ui_accept" ->
+        running <-
+            match running with
+            | Running -> Paused
+            | Paused -> Running
+            | SingleFrame -> Paused
+    | IsActionPressed "run_step" ->
+        running <-
+            match running with
+            | Running -> Paused
+            | Paused -> SingleFrame
+            | SingleFrame -> Paused
     | _ -> ()
+
+let _runSimulationStep (this: Node2D) : unit =
+    if running = Running || running = SingleFrame then
+        // Need to get the list of updated cells and then add any new ones
+        //   that spontaneously came into existence
+        let (updatedCells, newCells) = cells |> Grid.Cells.getCellsNextStatus
+        cells <- updatedCells
+        newCells |> List.iter (fun c -> upsertCell this (positionToVector c))
+
+        reconcileGodotCells this
+
+    if running = SingleFrame then
+        running <- Paused
 
 let _process (this: Node2D) (delta: double) : unit =
     let mutable debug = this.GetNode<Label>("Wall/DebugInfo")
@@ -131,18 +161,10 @@ let _process (this: Node2D) (delta: double) : unit =
             "MousePosition: %A
 GridPosition: %A
 Zoom: %f
-Running: %b"
+Running: %A"
             pos
             gridPos
             zoom
             running
 
-let _runSimulationStep (this: Node2D) : unit =
-    if running then
-        // Need to get the list of updated cells and then add any new ones
-        //   that spontaneously came into existence
-        let (updatedCells, newCells) = cells |> Grid.Cells.getCellsNextStatus
-        cells <- updatedCells
-        newCells |> List.iter (fun c -> upsertCell this (positionToVector c))
-
-        reconcileGodotCells this
+    _runSimulationStep this

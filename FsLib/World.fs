@@ -116,10 +116,6 @@ let _ready (this: Node2D) : unit =
 
 let (|IsActionPressed|_|) (action: string) (event: InputEvent) =
     if event.IsActionPressed(action) then Some() else None
-// if event.IsActionPressed(action, allowEcho = true) then
-//     Some()
-// else
-//     None
 
 
 
@@ -127,29 +123,31 @@ let _unhandledInput (this: Node2D) (event: InputEvent) : unit =
     match event with
     | :? InputEventMouseButton as e ->
         match e.ButtonIndex, e.IsPressed() with
-        // | MouseButton.Left, true ->
-        //     this.GetGlobalMousePosition() |> upsertCell this
-        // | MouseButton.Right, true ->
-        //     this.GetGlobalMousePosition() |> markCellDead this
+        | MouseButton.Left, true ->
+            this.GetGlobalMousePosition() |> upsertCell this
+        | MouseButton.Right, true ->
+            this.GetGlobalMousePosition() |> markCellDead this
         | MouseButton.WheelDown, _ -> changeZoom this zoomStep
         | MouseButton.WheelUp, _ -> changeZoom this -zoomStep
+        | _ -> ()
+    | :? InputEventMouseMotion as e ->
+        match e.ButtonMask with
+        | MouseButtonMask.Left ->
+            this.GetGlobalMousePosition() |> upsertCell this
+        | MouseButtonMask.Right ->
+            this.GetGlobalMousePosition() |> markCellDead this
+        | MouseButtonMask.Middle ->
+            let mutable cameraNode = this.GetNode<Camera2D>("Camera")
+            cameraNode.Offset <- cameraNode.Offset - e.Relative
         | _ -> ()
     | IsActionPressed "ui_accept" -> running <- not running
     | _ -> ()
 
 let _process (this: Node2D) (delta: double) : unit =
-
-    if Input.IsMouseButtonPressed(MouseButton.Left) then
-        this.GetGlobalMousePosition() |> upsertCell this
-
-    if Input.IsMouseButtonPressed(MouseButton.Right) then
-        this.GetGlobalMousePosition() |> markCellDead this
-
     let mutable debug = this.GetNode<Label>("Wall/DebugInfo")
 
     let pos = this.GetGlobalMousePosition()
     let gridPos = pos |> vectorToPosition
-
 
     debug.Text <-
         sprintf
@@ -171,4 +169,3 @@ let _runSimulationStep (this: Node2D) : unit =
         newCells |> List.iter (fun c -> upsertCell this (positionToVector c))
 
         reconcileGodotCells this
-// running <- false

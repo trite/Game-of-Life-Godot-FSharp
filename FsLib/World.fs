@@ -96,8 +96,6 @@ let _ready (this: Node2D) : unit =
 let (|IsActionPressed|_|) (action: string) (event: InputEvent) =
     if event.IsActionPressed(action) then Some() else None
 
-
-
 let _unhandledInput (this: Node2D) (event: InputEvent) : unit =
     match event with
     | :? InputEventMouseButton as e ->

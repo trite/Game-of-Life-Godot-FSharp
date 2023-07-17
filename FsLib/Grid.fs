@@ -54,6 +54,9 @@ module Cells =
             ))
 
     let getCellNextStatus (pos: position) (cells) =
+        // Returning the list of neighbors at the end gives us a 2nd pass
+        //   list to check for spontaneous generation of new cells around
+        //   borders of currently alive cells
         let positions =
             [ { x = pos.x - 1; y = pos.y - 1 }
               { x = pos.x - 1; y = pos.y }
@@ -78,6 +81,7 @@ module Cells =
     let getCellsNextStatus (Cells(cells): Cells) =
         let aliveCells = cells |> Map.filter (fun _ c -> c.status = Alive)
 
+        // Get updated cells and 2nd pass list
         let (updatedCells, extrasToCheck) =
             aliveCells
             |> Map.toList
@@ -88,7 +92,10 @@ module Cells =
                 ((p, { c with status = status }), positions))
             |> List.unzip
 
-        let extras =
+        // Run through 2nd pass list,
+        //   filter out already checked,
+        //   then check for spontaneous generation
+        let spontaneousCells =
             extrasToCheck
             |> List.concat
             |> List.distinct
@@ -98,10 +105,11 @@ module Cells =
                 (p, { status = status; position = p }))
             |> List.filter (fun (_, c) -> c.status = Alive)
 
-        (updatedCells @ extras)
+        // Combine the 2 lists and return
+        (updatedCells @ spontaneousCells)
         |> Map.ofList
         |> Cells
-        |> (fun x -> (x, extras |> List.map fst))
+        |> (fun x -> (x, spontaneousCells |> List.map fst))
 
     let positions (Cells(cells): Cells) : position list =
         cells |> Map.toList |> List.map fst

@@ -10,9 +10,6 @@ let mutable aliveColor: Color option = None
 [<ExportAttribute(PropertyHint.None, "blah")>]
 let mutable deadColor: Color option = Some(new Color(32u))
 
-// let mutable godotCells: Collections.Dictionary<Vector2, Sprite2D> =
-//     Collections.Dictionary<Vector2, Sprite2D>()
-
 let mutable godotCells: Map<Grid.position, Sprite2D> = Map.empty
 
 let mutable cells: Grid.Cells = Grid.Cells.empty
@@ -46,6 +43,8 @@ let reconcileGodotCells (this: Node2D) : unit =
 
     cells
     |> Grid.Cells.cells
+    // TODO: Mutating after each change might be heavy
+    //         Could we batch the changes and reduce the number of mutations?
     |> List.iter
         (fun
             { Grid.position = pos
@@ -69,30 +68,10 @@ let reconcileGodotCells (this: Node2D) : unit =
                             Some(newCell)
                 ))
 
-// let vectorToPosition (pos: Vector2) : Grid.position =
-//       pos |> getGridPosition
-
-// let positionToVector (pos: Grid.cell) : Vector2 =
-//     getGodotPosition pos.position
-
 let upsertCell (this: Node2D) (gridPosition: Vector2) : unit =
     let cell = Grid.makeCell Grid.Alive (gridPosition |> vectorToPosition)
     cells <- Grid.Cells.upsertCell cell cells
     reconcileGodotCells this
-// TODO: reconcile with Godot cells
-
-// This would modify the Godot Cells, which we don't want anymore
-// match cell with
-// | None -> failwith "Could not find the `Cell` node!"
-// | Some(c) ->
-//     if (cells.ContainsKey(gridPosition)) then
-//         failwith "Cell already exists at this position!"
-//     else
-//         let mutable newCell = c.Duplicate() :?> Sprite2D
-//         newCell.Position <- gridPosition * cellSize
-//         this.AddChild(newCell)
-//         newCell.Show()
-//         cells.Add(gridPosition, newCell)
 
 let changeZoom (this: Node2D) (delta: float32) : unit =
     zoom <- Mathf.Clamp(zoom + delta, 0.1f, 8.0f)

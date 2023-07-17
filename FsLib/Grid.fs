@@ -70,7 +70,6 @@ module Cells =
         |> List.filter (fun c -> c.status = Alive)
         |> List.length
         |> (function
-        // | 2 -> cells[pos].status
         | 2 -> if cells.ContainsKey(pos) then cells[pos].status else Dead
         | 3 -> Alive
         | _ -> Dead)
@@ -103,22 +102,6 @@ module Cells =
         |> Map.ofList
         |> Cells
         |> (fun x -> (x, extras |> List.map fst))
-
-
-
-    // |> Map.map (fun _ c ->
-    //     let (status, positions) = getCellNextStatus c.position cells
-    //     ({ c with status = status }, positions))
-    // ({ c with
-    //     status = getCellNextStatus c.position cells },
-    //  ()))
-    // cells
-    // |> map (
-    //     Map.map (fun _ c ->
-    //         ({ c with
-    //             status = getCellNextStatus c.position (cells) },
-    //          ()))
-    // )
 
     let positions (Cells(cells): Cells) : position list =
         cells |> Map.toList |> List.map fst

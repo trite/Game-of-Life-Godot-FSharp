@@ -4,6 +4,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ShaderWorld.fs" />
     <Compile Include="Grid.fs" />
     <Compile Include="World.fs" />
   </ItemGroup>

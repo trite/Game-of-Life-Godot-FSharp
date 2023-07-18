@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3 uid="uid://d13wreuvm1jkh"]
+
+[ext_resource type="Script" path="res://ShaderWorld.cs" id="1_da815"]
+[ext_resource type="Shader" path="res://ShaderWorld.gdshader" id="1_jlpy8"]
+[ext_resource type="Texture2D" uid="uid://cb2j3ys4foo6m" path="res://icon.png" id="2_x0r2q"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_n234v"]
+shader = ExtResource("1_jlpy8")
+shader_parameter/dead_color = Vector4(0, 0, 0, 1)
+
+[node name="ShaderWorld" type="Node2D"]
+script = ExtResource("1_da815")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_n234v")
+position = Vector2(186, 147)
+texture = ExtResource("2_x0r2q")
+
+[node name="Label" type="Label" parent="."]
+offset_left = 310.0
+offset_top = 413.0
+offset_right = 350.0
+offset_bottom = 436.0
+text = "test"
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0

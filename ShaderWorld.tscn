@@ -3,13 +3,15 @@
 [ext_resource type="Script" path="res://ShaderWorld.cs" id="1_da815"]
 [ext_resource type="Shader" path="res://ShaderWorld.gdshader" id="1_jlpy8"]
 [ext_resource type="Texture2D" uid="uid://bco2xej0ywi88" path="res://new_icon.png" id="3_fygfd"]
-[ext_resource type="Texture2D" uid="uid://etjkw3yse1h1" path="res://start.png" id="4_o0ca1"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_hb72h"]
 viewport_path = NodePath("OutputViewport")
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_oyu8u"]
-viewport_path = NodePath("SimulationViewport")
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hr00l"]
+shader = ExtResource("1_jlpy8")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5cujn"]
+shader = ExtResource("1_jlpy8")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_n234v"]
 shader = ExtResource("1_jlpy8")
@@ -24,22 +26,24 @@ texture = SubResource("ViewportTexture_hb72h")
 expand_mode = 5
 
 [node name="OutputViewport" type="SubViewport" parent="."]
+disable_3d = true
 transparent_bg = true
+gui_disable_input = true
 size = Vector2i(640, 480)
 render_target_clear_mode = 2
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="OutputSprite" type="Sprite2D" parent="OutputViewport"]
-texture = SubResource("ViewportTexture_oyu8u")
+material = SubResource("ShaderMaterial_hr00l")
 
 [node name="SimulationViewport" type="SubViewport" parent="."]
 transparent_bg = true
 size = Vector2i(640, 480)
 render_target_clear_mode = 2
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="SimulationSprite" type="Sprite2D" parent="SimulationViewport"]
-texture = ExtResource("4_o0ca1")
+material = SubResource("ShaderMaterial_5cujn")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 visible = false
@@ -54,3 +58,6 @@ offset_top = 413.0
 offset_right = 350.0
 offset_bottom = 436.0
 text = "test"
+
+[node name="Camera2D" type="Camera2D" parent="."]
+offset = Vector2(320, 240)

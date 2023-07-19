@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://ShaderWorld.cs" id="1_da815"]
 [ext_resource type="Material" uid="uid://bwj5f182ja683" path="res://ShaderWorld2.tres" id="2_avkev"]
-[ext_resource type="Texture2D" uid="uid://etjkw3yse1h1" path="res://start.png" id="4_o0ca1"]
+[ext_resource type="Texture2D" uid="uid://dy3gqjfnkrnmg" path="res://005-what-fresh-hell-is-this-less.png" id="3_v8cl2"]
 [ext_resource type="Script" path="res://TextureRect.gd" id="4_q3vcx"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_niyr4"]
@@ -11,35 +11,34 @@ viewport_path = NodePath("SubViewportContainer/SubViewport")
 [node name="ShaderWorld" type="Control"]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 640.0
-offset_bottom = 480.0
+offset_right = 3440.0
+offset_bottom = 1440.0
 script = ExtResource("1_da815")
 shaderMaterial = ExtResource("2_avkev")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 3440.0
+offset_bottom = 1440.0
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
 transparent_bg = true
 handle_input_locally = false
-size = Vector2i(640, 480)
+size = Vector2i(3440, 1440)
 render_target_clear_mode = 2
 render_target_update_mode = 4
 
 [node name="TextureRect" type="TextureRect" parent="SubViewportContainer/SubViewport"]
-offset_right = 40.0
-offset_bottom = 40.0
-texture = ExtResource("4_o0ca1")
+offset_right = 3440.0
+offset_bottom = 1440.0
+texture = ExtResource("3_v8cl2")
 script = ExtResource("4_q3vcx")
 shader_material = ExtResource("2_avkev")
 
 [node name="DisplayRect" type="TextureRect" parent="."]
-visible = false
 layout_mode = 0
-offset_right = 1920.0
-offset_bottom = 1080.0
+offset_right = 3440.0
+offset_bottom = 1440.0
 texture = SubResource("ViewportTexture_niyr4")
 expand_mode = 3
 

@@ -1,14 +1,23 @@
 using Godot;
 using System;
 
-public partial class ShaderWorld : Node2D
+public partial class ShaderWorld : Control
 {
   // float blue_value = 0.0f;
+
+  // [Export]
+  // public float test = 0.0f;
+
+  // [Export]
+  // public ShaderMaterial shaderMaterial;
 
   // Called when the node enters the scene tree for the first time.
   public override void _Ready()
   {
     // GetNode<Label>("Label").Text = "Hello World!";
+    GetNode<SubViewport>("SubViewportContainer/SubViewport").RenderTargetUpdateMode = SubViewport.UpdateMode.Always;
+    // var x = ShaderMaterial.
+    // GetNode<TextureRect>("TextureRect").Material = 
   }
 
   // Called every frame. 'delta' is the elapsed time since the previous frame.

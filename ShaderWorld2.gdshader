@@ -20,12 +20,19 @@ int ca_count(in sampler2D tex, vec2 uv, vec2 pixel_size) {
       modifier = min(1., abs(x) + abs(y));
 
       // Add any neighbours x value (we could also use y or z)
-//      neighbours += getCellContent(texture(tex, uv + vec2(x, y) * pixel_size)) * modifier;
 	  neighbours += getCellContent(textureLod(tex, uv + vec2(x, y) * pixel_size, 0.0)) * modifier;
     }
   }
 
   return int(neighbours);
+}
+
+// by anastadunbar - source: https://www.shadertoy.com/view/XljGzV
+vec3 hsl2rgb( in vec3 c )
+{
+    vec3 rgb = clamp( abs(mod(c.x*6.0+vec3(0.0,4.0,2.0),6.0)-3.0)-1.0, 0.0, 1.0 );
+
+    return c.z + c.y * (rgb-0.5)*(1.0-abs(2.0*c.z-1.0));
 }
 
 vec4 getColor(vec4 cc, int count, float time) {
@@ -37,10 +44,8 @@ vec4 getColor(vec4 cc, int count, float time) {
     return cc;
   }
 
-  // If the cell is dead but has 3 neighbours
-  // it will spring into life
   else if (count == 3) {
-    return vec4(sin(time), cos(time), 1.0, 1.0);
+	return vec4(hsl2rgb(vec3(time * 0.05, 0.5, 0.5)), 1.0);
   }
 
   // For all other cases the cells are dead
@@ -48,22 +53,10 @@ vec4 getColor(vec4 cc, int count, float time) {
 }
 
 void fragment() {
-//	vec3 c = textureLod(screen_texture, SCREEN_UV, 0.0).rgb;
-
-//	vec3 newc = vec3(getNext(c.r), getNext(c.g), getNext(c.b));
 	vec2 uv = SCREEN_UV;
 	vec2 sz = SCREEN_PIXEL_SIZE;
 
 	int count = ca_count(screen_texture, uv, sz);
 	
-//	COLOR = getColor(texture(TEXTURE, uv), count, TIME);
 	COLOR = getColor(textureLod(screen_texture, uv, 0.0), count, TIME);
-	
-	// Place fragment code here.
-	
-//	COLOR = texture(TEXTURE, UV);
-//	float grey = .21 * COLOR.r + .71 * COLOR.g + .07 * COLOR.b;
-//    COLOR.rgb = vec3(grey); // Change the color value
-
-//	COLOR.rgb = vec3(0.5, 0.8, 0.8);
 }

@@ -3,35 +3,43 @@ using System;
 
 public partial class ShaderWorld : Control
 {
-  // float blue_value = 0.0f;
+  [Export]
+  public ShaderMaterial shaderMaterial;
 
-  // [Export]
-  // public float test = 0.0f;
+  public bool animation_running = false;
 
-  // [Export]
-  // public ShaderMaterial shaderMaterial;
+  public bool game_running = false;
 
   // Called when the node enters the scene tree for the first time.
   public override void _Ready()
   {
-    // GetNode<Label>("Label").Text = "Hello World!";
-    GetNode<SubViewport>("SubViewportContainer/SubViewport").RenderTargetUpdateMode = SubViewport.UpdateMode.Always;
-    // var x = ShaderMaterial.
-    // GetNode<TextureRect>("TextureRect").Material = 
+	// GetNode<SubViewport>("SubViewportContainer/SubViewport").RenderTargetUpdateMode = SubViewport.UpdateMode.Always;
   }
 
   // Called every frame. 'delta' is the elapsed time since the previous frame.
   public override void _Process(double delta)
   {
-    // blue_value += 0.001f;
-    // // Material.SetShaderParam("blue_value", blue_value);
-    // // material
-    // var node = GetNode<Sprite2D>("Sprite2D");
-    // if (node != null && node.Material != null && node.Material is ShaderMaterial)
-    // {
-    //   (node.Material as ShaderMaterial).SetShaderParameter("blue", blue_value);
+	GetNode<Label>("Label").Text = $" game_running: {game_running} \n  animation_running: {animation_running}";
 
-    //   GetNode<Label>("Label").Text = blue_value.ToString();
-    // }
+	if (game_running && !animation_running)
+	{
+	  GetNode<TextureRect>("SubViewportContainer/SubViewport/TextureRect").Material = shaderMaterial;
+	  animation_running = true;
+	}
+
+	if (!game_running && animation_running)
+	{
+	  GetNode<TextureRect>("SubViewportContainer/SubViewport/TextureRect").Texture = GetNode<SubViewport>("SubViewportContainer/SubViewport").GetTexture();
+	  GetNode<TextureRect>("SubViewportContainer/SubViewport/TextureRect").Material = null;
+	  animation_running = false;
+	}
+  }
+
+  public override void _UnhandledInput(InputEvent @event)
+  {
+	if (@event.IsActionPressed("ui_accept"))
+	{
+	  game_running = !game_running;
+	}
   }
 }

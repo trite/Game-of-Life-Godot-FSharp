@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://d13wreuvm1jkh"]
+[gd_scene load_steps=6 format=3 uid="uid://d13wreuvm1jkh"]
 
 [ext_resource type="Script" path="res://ShaderWorld.cs" id="1_da815"]
 [ext_resource type="Material" uid="uid://bwj5f182ja683" path="res://ShaderWorld2.tres" id="2_avkev"]
 [ext_resource type="Texture2D" uid="uid://etjkw3yse1h1" path="res://start.png" id="4_o0ca1"]
+[ext_resource type="Script" path="res://TextureRect.gd" id="4_q3vcx"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_niyr4"]
 viewport_path = NodePath("SubViewportContainer/SubViewport")
@@ -13,6 +14,7 @@ anchors_preset = 0
 offset_right = 640.0
 offset_bottom = 480.0
 script = ExtResource("1_da815")
+shaderMaterial = ExtResource("2_avkev")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
 layout_mode = 0
@@ -27,13 +29,22 @@ render_target_clear_mode = 2
 render_target_update_mode = 4
 
 [node name="TextureRect" type="TextureRect" parent="SubViewportContainer/SubViewport"]
-material = ExtResource("2_avkev")
 offset_right = 40.0
 offset_bottom = 40.0
 texture = ExtResource("4_o0ca1")
+script = ExtResource("4_q3vcx")
+shader_material = ExtResource("2_avkev")
 
 [node name="DisplayRect" type="TextureRect" parent="."]
+visible = false
 layout_mode = 0
-offset_right = 640.0
-offset_bottom = 480.0
+offset_right = 1920.0
+offset_bottom = 1080.0
 texture = SubResource("ViewportTexture_niyr4")
+expand_mode = 3
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "blahbalh"

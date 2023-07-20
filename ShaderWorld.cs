@@ -4,7 +4,19 @@ using System;
 public partial class ShaderWorld : Control
 {
   [Export]
-  public ShaderMaterial shaderMaterial;
+  public ShaderMaterial? shaderMaterial;
+
+  [Export]
+  public Vector2 impulseVal = new(0.1f, 0.1f);
+
+  [Export]
+  public float intendedSpeed = 1.0f;
+
+  [Export]
+  public float ballRadius = 140.0f;
+
+  [Export]
+  public Vector2 forceAdder = new(1.08f, 1.04f);
 
   public bool animation_running = false;
 
@@ -13,36 +25,56 @@ public partial class ShaderWorld : Control
   // Called when the node enters the scene tree for the first time.
   public override void _Ready()
   {
-	// GetNode<SubViewport>("SubViewportContainer/SubViewport").RenderTargetUpdateMode = SubViewport.UpdateMode.Always;
+    GetNode<RigidBody2D>("RigidBody2D").ApplyImpulse(impulseVal);
   }
 
   // Called every frame. 'delta' is the elapsed time since the previous frame.
   public override void _Process(double delta)
   {
-	GetNode<Label>("Label").Text = $" game_running: {game_running} \n  animation_running: {animation_running}";
+    var textureNode = GetNode<TextureRect>("SubViewportContainer/SubViewport/TextureRect");
 
-	if (game_running && !animation_running)
-	{
-	  var node = GetNode<TextureRect>("SubViewportContainer/SubViewport/TextureRect");
-	  node.Material = shaderMaterial;
-	  ((ShaderMaterial)node.Material).SetShaderParameter("global_transform", GetGlobalTransform());
+    var ball = GetNode<RigidBody2D>("RigidBody2D");
 
-	  animation_running = true;
-	}
 
-	if (!game_running && animation_running)
-	{
-	  GetNode<TextureRect>("SubViewportContainer/SubViewport/TextureRect").Texture = GetNode<SubViewport>("SubViewportContainer/SubViewport").GetTexture();
-	  GetNode<TextureRect>("SubViewportContainer/SubViewport/TextureRect").Material = null;
-	  animation_running = false;
-	}
+    if (ball.LinearVelocity.Length() < intendedSpeed)
+    {
+      // GetNode<RigidBody2D>("RigidBody2D").ApplyImpulse(impulseVal);
+      // ball.ApplyImpulse(ball.LinearVelocity.Normalized() * forceMultiplier * delta);
+      ball.ApplyImpulse(ball.LinearVelocity.Normalized() + new Vector2(
+        (float)(forceAdder.X * delta),
+        (float)(forceAdder.Y * delta)));
+    }
+
+
+    GetNode<Label>("Label").Text = $" game_running: {game_running} \n  animation_running: {animation_running}";
+
+    if (game_running && !animation_running)
+    {
+      textureNode.Material = shaderMaterial;
+      ((ShaderMaterial)textureNode.Material).SetShaderParameter("global_transform", GetGlobalTransform());
+
+      animation_running = true;
+    }
+
+    if (!game_running && animation_running)
+    {
+      textureNode.Texture = GetNode<SubViewport>("SubViewportContainer/SubViewport").GetTexture();
+      textureNode.Material = null;
+      animation_running = false;
+    }
+
+    if (game_running)
+    {
+      ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_radius", ballRadius);
+      ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_center", GetNode<RigidBody2D>("RigidBody2D").GlobalPosition);
+    }
   }
 
   public override void _UnhandledInput(InputEvent @event)
   {
-	if (@event.IsActionPressed("ui_accept"))
-	{
-	  game_running = !game_running;
-	}
+    if (@event.IsActionPressed("ui_accept"))
+    {
+      game_running = !game_running;
+    }
   }
 }

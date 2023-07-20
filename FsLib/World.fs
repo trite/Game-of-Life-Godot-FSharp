@@ -7,8 +7,12 @@ let mutable cell: Sprite2D option = None
 
 let mutable aliveColor: Color option = None
 
-[<ExportAttribute(PropertyHint.None, "blah")>]
+[<Export(PropertyHint.None, "blah")>]
 let mutable deadColor: Color option = Some(new Color(32u))
+
+
+let mutable vBarrierColor: Color option =
+    Some(new Color(0.82745f, 0.47058f, 0.16470f, 1.0f))
 
 let mutable godotCells: Map<Grid.position, Sprite2D> = Map.empty
 
@@ -42,9 +46,12 @@ let positionToVector (pos: Grid.position) : Vector2 =
     new Vector2(float32 pos.x, float32 pos.y) * cellSize
 
 let reconcileGodotCells (this: Node2D) : unit =
-    let statusToColor =
+    let statusToColor (behavior: Grid.cellBehavior) =
         function
-        | Grid.Alive -> aliveColor.Value
+        | Grid.Alive ->
+            match behavior with
+            | Grid.Normal -> aliveColor.Value
+            | Grid.VBarrier -> vBarrierColor.Value
         | Grid.Dead -> deadColor.Value
 
     cells
@@ -54,7 +61,8 @@ let reconcileGodotCells (this: Node2D) : unit =
     |> List.iter
         (fun
             { Grid.position = pos
-              Grid.status = status } ->
+              Grid.status = status
+              Grid.behavior = behavior } ->
             godotCells <-
                 godotCells.Change(
                     pos,
@@ -62,20 +70,26 @@ let reconcileGodotCells (this: Node2D) : unit =
                         match c with
                         | Some(c) ->
                             c.Position <- positionToVector pos
-                            c.Modulate <- statusToColor status
+                            c.Modulate <- statusToColor behavior status
                             Some(c)
 
                         | None ->
                             let newCell = cell.Value.Duplicate() :?> Sprite2D
                             newCell.Position <- positionToVector pos
-                            newCell.Modulate <- statusToColor status
+                            newCell.Modulate <- statusToColor behavior status
                             this.AddChild(newCell)
                             newCell.Show()
                             Some(newCell)
                 ))
 
-let upsertCell (this: Node2D) (gridPosition: Vector2) : unit =
-    let cell = Grid.makeCell Grid.Alive (gridPosition |> vectorToPosition)
+let upsertCell
+    (this: Node2D)
+    (behavior: Grid.cellBehavior)
+    (gridPosition: Vector2)
+    : unit =
+    let cell =
+        Grid.makeCell Grid.Alive (gridPosition |> vectorToPosition) behavior
+
     cells <- Grid.Cells.upsertCell cell cells
     reconcileGodotCells this
 
@@ -86,6 +100,13 @@ let changeZoom (this: Node2D) (delta: float32) : unit =
 
 let markCellDead (this: Node2D) (pos: Vector2) : unit =
     cells <- Grid.Cells.markDead (vectorToPosition pos) cells
+    reconcileGodotCells this
+
+let markCellVBarrier (this: Node2D) (pos: Vector2) : unit =
+    // cells <- Grid.Cells.markDead (vectorToPosition pos) cells
+    cells <-
+        Grid.Cells.updateBehavior (vectorToPosition pos) Grid.VBarrier cells
+
     reconcileGodotCells this
 
 let _ready (this: Node2D) : unit =
@@ -107,7 +128,7 @@ let _unhandledInput (this: Node2D) (event: InputEvent) : unit =
     | :? InputEventMouseButton as e ->
         match e.ButtonIndex, e.IsPressed() with
         | MouseButton.Left, true ->
-            this.GetGlobalMousePosition() |> upsertCell this
+            this.GetGlobalMousePosition() |> upsertCell this Grid.Normal
         | MouseButton.Right, true ->
             this.GetGlobalMousePosition() |> markCellDead this
         | MouseButton.WheelDown, _ -> changeZoom this zoomStep
@@ -116,7 +137,7 @@ let _unhandledInput (this: Node2D) (event: InputEvent) : unit =
     | :? InputEventMouseMotion as e ->
         match e.ButtonMask with
         | MouseButtonMask.Left ->
-            this.GetGlobalMousePosition() |> upsertCell this
+            this.GetGlobalMousePosition() |> upsertCell this Grid.Normal
         | MouseButtonMask.Right ->
             this.GetGlobalMousePosition() |> markCellDead this
         | MouseButtonMask.Middle ->
@@ -135,6 +156,16 @@ let _unhandledInput (this: Node2D) (event: InputEvent) : unit =
             | Running -> Paused
             | Paused -> SingleFrame
             | SingleFrame -> Paused
+    | IsActionPressed "mark_vbarrier" ->
+        match vBarrierColor with
+        | Some(color) ->
+            // TODO: There's plenty still here to take care of but I'm sleepy
+            this.GetGlobalMousePosition() |> upsertCell this Grid.VBarrier
+        // c.Modulate <- color
+        // c.Show()
+        | _ ->
+            failwith
+                "Could not find one or both of the cell/vBarrierColor nodes"
     | _ -> ()
 
 let _runSimulationStep (this: Node2D) : unit =
@@ -143,7 +174,9 @@ let _runSimulationStep (this: Node2D) : unit =
         //   that spontaneously came into existence
         let (updatedCells, newCells) = cells |> Grid.Cells.getCellsNextStatus
         cells <- updatedCells
-        newCells |> List.iter (fun c -> upsertCell this (positionToVector c))
+
+        newCells
+        |> List.iter (fun c -> upsertCell this Grid.Normal (positionToVector c))
 
         reconcileGodotCells this
 

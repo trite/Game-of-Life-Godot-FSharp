@@ -23,7 +23,10 @@ public partial class ShaderWorld : Control
 
 	if (game_running && !animation_running)
 	{
-	  GetNode<TextureRect>("SubViewportContainer/SubViewport/TextureRect").Material = shaderMaterial;
+	  var node = GetNode<TextureRect>("SubViewportContainer/SubViewport/TextureRect");
+	  node.Material = shaderMaterial;
+	  ((ShaderMaterial)node.Material).SetShaderParameter("global_transform", GetGlobalTransform());
+
 	  animation_running = true;
 	}
 

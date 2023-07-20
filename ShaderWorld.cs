@@ -40,9 +40,7 @@ public partial class ShaderWorld : Control
     {
       // GetNode<RigidBody2D>("RigidBody2D").ApplyImpulse(impulseVal);
       // ball.ApplyImpulse(ball.LinearVelocity.Normalized() * forceMultiplier * delta);
-      ball.ApplyImpulse(ball.LinearVelocity.Normalized() + new Vector2(
-        (float)(forceAdder.X * delta),
-        (float)(forceAdder.Y * delta)));
+      ball.ApplyImpulse(ball.LinearVelocity.Normalized() + forceAdder * (float)delta);
     }
 
 

@@ -4,3 +4,8 @@
 
 [resource]
 shader = ExtResource("1_klkf4")
+shader_parameter/global_transform = null
+shader_parameter/inside_top_left = null
+shader_parameter/inside_bottom_right = null
+shader_parameter/ball_center = null
+shader_parameter/ball_radius = null

@@ -56,7 +56,7 @@ let reconcileGodotCells (this: Node2D) : unit =
 
     cells
     |> Grid.Cells.cells
-    // TODO: Mutating after each change might be heavy
+    // TODO-LowPri: Mutating after each change might be heavy
     //         Could we batch the changes and reduce the number of mutations?
     |> List.iter
         (fun

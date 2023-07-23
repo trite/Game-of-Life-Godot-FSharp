@@ -10,7 +10,7 @@ public partial class ShaderWorld : Control
   public Vector2 impulseVal = new(0.1f, 0.1f);
 
   [Export]
-  public float intendedSpeed = 1.0f;
+  public float intendedSpeed = 1500f;
 
   [Export]
   public float ballRadius = 140.0f;
@@ -22,27 +22,14 @@ public partial class ShaderWorld : Control
 
   public bool game_running = false;
 
-  // Called when the node enters the scene tree for the first time.
   public override void _Ready()
   {
     GetNode<RigidBody2D>("RigidBody2D").ApplyImpulse(impulseVal);
   }
 
-  // Called every frame. 'delta' is the elapsed time since the previous frame.
   public override void _Process(double delta)
   {
     var textureNode = GetNode<TextureRect>("SubViewportContainer/SubViewport/TextureRect");
-
-    var ball = GetNode<RigidBody2D>("RigidBody2D");
-
-
-    if (ball.LinearVelocity.Length() < intendedSpeed)
-    {
-      // GetNode<RigidBody2D>("RigidBody2D").ApplyImpulse(impulseVal);
-      // ball.ApplyImpulse(ball.LinearVelocity.Normalized() * forceMultiplier * delta);
-      ball.ApplyImpulse(ball.LinearVelocity.Normalized() + forceAdder * (float)delta);
-    }
-
 
     GetNode<Label>("Label").Text = $" game_running: {game_running} \n  animation_running: {animation_running}";
 
@@ -65,6 +52,16 @@ public partial class ShaderWorld : Control
     {
       ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_radius", ballRadius);
       ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_center", GetNode<RigidBody2D>("RigidBody2D").GlobalPosition);
+    }
+  }
+
+  public override void _PhysicsProcess(double delta)
+  {
+    var ball = GetNode<RigidBody2D>("RigidBody2D");
+
+    if (ball.LinearVelocity.Length() < intendedSpeed)
+    {
+      ball.ApplyImpulse(ball.LinearVelocity.Normalized() * forceAdder * (float)delta);
     }
   }
 

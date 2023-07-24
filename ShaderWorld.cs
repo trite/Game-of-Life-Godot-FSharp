@@ -24,6 +24,9 @@ public partial class ShaderWorld : Control
   [Export]
   public bool ballEnabled = false;
 
+  [Export]
+  public int maxFPS = 100;
+
   public bool animation_running = false;
 
   public bool game_running = false;
@@ -37,6 +40,7 @@ public partial class ShaderWorld : Control
   public float lowSpeedY = 100f;
 
   public bool resetRequested = false;
+  public bool resetGameRunning = false;
   public bool resetFinished = false;
 
   public override void _Ready()
@@ -46,12 +50,15 @@ public partial class ShaderWorld : Control
 
   public override void _Process(double delta)
   {
+    Engine.MaxFps = maxFPS;
+
     var textureNode = GetNode<TextureRect>("SimulationContainer/SimulationViewport/Simulation");
 
     GetNode<Label>("Label").Text =
       $"game_running: {game_running}\n" +
       $"animation_running: {animation_running}\n" +
-      $"ball_speed: {GetNode<RigidBody2D>("RigidBody2D").LinearVelocity.Length()}\n" +
+      $"FPS: {Engine.GetFramesPerSecond()}\n" +
+      $"ball_speed: {Math.Floor(GetNode<RigidBody2D>("RigidBody2D").LinearVelocity.Length())}\n" +
       $"ball_position: {GetNode<RigidBody2D>("RigidBody2D").GlobalPosition}\n" +
       $"ball_enabled: {ballEnabled}\n" +
       $"low_speed_x_counter: {lowSpeedXCounter}\n" +
@@ -73,7 +80,9 @@ public partial class ShaderWorld : Control
     {
       resetRequested = false;
       resetFinished = false;
-      game_running = true;
+
+      game_running = resetGameRunning;
+      resetGameRunning = false;
     }
 
     if (game_running && !animation_running)
@@ -151,6 +160,7 @@ public partial class ShaderWorld : Control
     if (@event.IsActionPressed("reset_simulation"))
     {
       resetRequested = true;
+      resetGameRunning = game_running;
       // var textureNode = GetNode<TextureRect>("SimulationContainer/SimulationViewport/Simulation");
       // textureNode.Texture = startingImage;
       GD.Print("Starting simulation reset...");

@@ -38,6 +38,7 @@ intendedSpeed = 2000.0
 ballRadius = 60.0
 forceAdder = Vector2(15, 15)
 ballEnabled = true
+maxFPS = 0
 
 [node name="SimulationContainer" type="SubViewportContainer" parent="."]
 layout_mode = 0

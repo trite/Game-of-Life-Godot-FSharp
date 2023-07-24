@@ -7,6 +7,9 @@ public partial class ShaderWorld : Control
   public ShaderMaterial? shaderMaterial;
 
   [Export]
+  public CompressedTexture2D? startingImage;
+
+  [Export]
   public Vector2 impulseVal = new(0.1f, 0.1f);
 
   [Export]
@@ -26,10 +29,15 @@ public partial class ShaderWorld : Control
   public bool game_running = false;
 
   public float lowSpeedXCounter = 0f;
-  public float lowSpeedYCounter = 0f;
+  public float lowSpeedXThreshhold = 1000f;
+  public float lowSpeedX = 100f;
 
-  public float lowSpeedXThreshhold = 10f;
-  public float lowSpeedYThreshhold = 10f;
+  public float lowSpeedYCounter = 0f;
+  public float lowSpeedYThreshhold = 1000f;
+  public float lowSpeedY = 100f;
+
+  public bool resetRequested = false;
+  public bool resetFinished = false;
 
   public override void _Ready()
   {
@@ -45,8 +53,28 @@ public partial class ShaderWorld : Control
       $"animation_running: {animation_running}\n" +
       $"ball_speed: {GetNode<RigidBody2D>("RigidBody2D").LinearVelocity.Length()}\n" +
       $"ball_position: {GetNode<RigidBody2D>("RigidBody2D").GlobalPosition}\n" +
-      $"ball_enabled: {ballEnabled}\n";
+      $"ball_enabled: {ballEnabled}\n" +
+      $"low_speed_x_counter: {lowSpeedXCounter}\n" +
+      $"low_speed_y_counter: {lowSpeedYCounter}\n";
 
+    if (resetRequested && !resetFinished)
+    {
+      if (game_running || animation_running)
+      {
+        game_running = false;
+      }
+      else
+      {
+        textureNode.Texture = startingImage;
+        resetFinished = true;
+      }
+    }
+    else if (resetRequested && resetFinished)
+    {
+      resetRequested = false;
+      resetFinished = false;
+      game_running = true;
+    }
 
     if (game_running && !animation_running)
     {
@@ -80,8 +108,8 @@ public partial class ShaderWorld : Control
       // TODO: Maybe add a check on X and Y, if either is too small apply a large bump in some direction
       var impulse = ball.LinearVelocity.Normalized() * forceAdder * (float)delta;
 
-      lowSpeedXCounter = impulse.X < 1.0f ? lowSpeedXCounter + (float)delta : 0f;
-      lowSpeedYCounter = impulse.Y < 1.0f ? lowSpeedYCounter + (float)delta : 0f;
+      lowSpeedXCounter = ball.LinearVelocity.X < lowSpeedX ? lowSpeedXCounter + (float)delta : 0f;
+      lowSpeedYCounter = ball.LinearVelocity.Y < lowSpeedY ? lowSpeedYCounter + (float)delta : 0f;
 
       if (lowSpeedXCounter > lowSpeedXThreshhold)
       {
@@ -113,6 +141,19 @@ public partial class ShaderWorld : Control
     if (@event.IsActionPressed("ui_accept"))
     {
       game_running = !game_running;
+    }
+
+    if (@event.IsActionPressed("ball_emitter_toggle"))
+    {
+      ballEnabled = !ballEnabled;
+    }
+
+    if (@event.IsActionPressed("reset_simulation"))
+    {
+      resetRequested = true;
+      // var textureNode = GetNode<TextureRect>("SimulationContainer/SimulationViewport/Simulation");
+      // textureNode.Texture = startingImage;
+      GD.Print("Starting simulation reset...");
     }
   }
 }

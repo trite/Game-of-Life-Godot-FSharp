@@ -25,7 +25,13 @@ vec4 convolute(vec2 uv, mat3 kernel, vec2 iResolution)
         for (int y = 0; y < 3; y++)
         {
             vec2 offset = vec2(direction[x], direction[y]) / iResolution.xy;
-            color += texture(screen_texture, uv+offset) * kernel[x][y];
+			
+			vec4 localTexture = texture(screen_texture, uv+offset);
+			
+			if (localTexture.r > 0.01 && localTexture.g > 0.01 && localTexture.b > 0.01) {
+				color += localTexture * kernel[x][y];
+			}
+			
         }
     }
     return color;

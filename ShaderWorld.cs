@@ -18,6 +18,9 @@ public partial class ShaderWorld : Control
   [Export]
   public Vector2 forceAdder = new(1.08f, 1.04f);
 
+  [Export]
+  public bool ballEnabled = false;
+
   public bool animation_running = false;
 
   public bool game_running = false;
@@ -31,7 +34,13 @@ public partial class ShaderWorld : Control
   {
     var textureNode = GetNode<TextureRect>("SubViewportContainer/SubViewport/TextureRect");
 
-    GetNode<Label>("Label").Text = $" game_running: {game_running} \n  animation_running: {animation_running}";
+    GetNode<Label>("Label").Text =
+      $"game_running: {game_running}\n" +
+      $"animation_running: {animation_running}\n" +
+      $"ball_speed: {GetNode<RigidBody2D>("RigidBody2D").LinearVelocity.Length()}\n" +
+      $"ball_position: {GetNode<RigidBody2D>("RigidBody2D").GlobalPosition}\n" +
+      $"ball_enabled: {ballEnabled}\n";
+
 
     if (game_running && !animation_running)
     {
@@ -52,6 +61,7 @@ public partial class ShaderWorld : Control
     {
       ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_radius", ballRadius);
       ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_center", GetNode<RigidBody2D>("RigidBody2D").GlobalPosition);
+      ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_enabled", ballEnabled);
     }
   }
 

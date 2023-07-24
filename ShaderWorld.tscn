@@ -1,23 +1,24 @@
-[gd_scene load_steps=12 format=3 uid="uid://d13wreuvm1jkh"]
+[gd_scene load_steps=13 format=3 uid="uid://d13wreuvm1jkh"]
 
 [ext_resource type="Script" path="res://ShaderWorld.cs" id="1_da815"]
 [ext_resource type="Material" uid="uid://bwj5f182ja683" path="res://ShaderWorld2.tres" id="2_avkev"]
 [ext_resource type="Texture2D" uid="uid://mxakh6or1g1" path="res://006-top-line-only.png" id="3_i3hd5"]
 [ext_resource type="Script" path="res://TextureRect.gd" id="4_q3vcx"]
 [ext_resource type="Texture2D" uid="uid://b63rn2eo1d44r" path="res://Circle.png" id="5_4gi82"]
+[ext_resource type="Material" uid="uid://b2hwpl11xskv1" path="res://Blur.tres" id="5_d25y0"]
 [ext_resource type="Texture2D" uid="uid://clcwl4buu58qx" path="res://simple-plus.png" id="6_vpcjs"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_uf7dm"]
 viewport_path = NodePath("SubViewportContainer/SubViewport")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ap3p1"]
-size = Vector2(4000, 220)
+size = Vector2(4000, 400)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nk6v8"]
-size = Vector2(220, 2000)
+size = Vector2(400, 2000)
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_2ygl4"]
-friction = 0.01
+friction = 0.0
 bounce = 1.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_qkhh2"]
@@ -30,8 +31,9 @@ offset_bottom = 1440.0
 script = ExtResource("1_da815")
 shaderMaterial = ExtResource("2_avkev")
 impulseVal = Vector2(0.25, 0.25)
-intendedSpeed = 15000.0
-ballRadius = 40.0
+intendedSpeed = 2000.0
+ballRadius = 60.0
+forceAdder = Vector2(15, 15)
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
 layout_mode = 0
@@ -52,12 +54,24 @@ texture = ExtResource("3_i3hd5")
 script = ExtResource("4_q3vcx")
 shader_material = ExtResource("2_avkev")
 
-[node name="DisplayRect" type="TextureRect" parent="."]
+[node name="Control" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="DisplayRect" type="TextureRect" parent="Control"]
 layout_mode = 0
 offset_right = 3440.0
 offset_bottom = 1440.0
 texture = SubResource("ViewportTexture_uf7dm")
 expand_mode = 3
+
+[node name="CanvasLayer" type="CanvasLayer" parent="Control"]
+
+[node name="ColorRect" type="ColorRect" parent="Control/CanvasLayer"]
+material = ExtResource("5_d25y0")
+offset_right = 1280.0
+offset_bottom = 1024.0
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 0
@@ -73,33 +87,32 @@ offset_right = 3385.0
 offset_bottom = 1385.0
 
 [node name="Bounding Box" type="StaticBody2D" parent="."]
-visible = false
 
 [node name="Bottom" type="CollisionShape2D" parent="Bounding Box"]
-position = Vector2(1720, 1440)
+position = Vector2(1720, 1640)
 shape = SubResource("RectangleShape2D_ap3p1")
 
 [node name="Top" type="CollisionShape2D" parent="Bounding Box"]
-position = Vector2(1720, 0)
+position = Vector2(1720, -100)
 shape = SubResource("RectangleShape2D_ap3p1")
 
 [node name="Left" type="CollisionShape2D" parent="Bounding Box"]
-position = Vector2(0, 720)
+position = Vector2(-200, 720)
 shape = SubResource("RectangleShape2D_nk6v8")
 
 [node name="Right" type="CollisionShape2D" parent="Bounding Box"]
-position = Vector2(3440, 720)
+position = Vector2(3640, 720)
 shape = SubResource("RectangleShape2D_nk6v8")
 
 [node name="RigidBody2D" type="RigidBody2D" parent="."]
-visible = false
 position = Vector2(1720, 720)
 mass = 0.01
 physics_material_override = SubResource("PhysicsMaterial_2ygl4")
 gravity_scale = 0.0
+lock_rotation = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D"]
-scale = Vector2(14.5, 14.5)
+scale = Vector2(5, 5)
 shape = SubResource("CircleShape2D_qkhh2")
 
 [node name="Sprite2D" type="Sprite2D" parent="RigidBody2D"]

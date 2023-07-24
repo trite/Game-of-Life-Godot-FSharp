@@ -10,14 +10,19 @@ uniform vec2 inside_bottom_right;
 uniform vec2 ball_center;
 uniform float ball_radius;
 
+uniform bool ball_enabled;
+
 const float vBarrier = 100.0;
 const float vBarrierWidthHalf = 25.0;
 
 highp float rand(vec2 co)
 {
-  highp float a = 12.9898;
-  highp float b = 78.233;
-  highp float c = 43758.5453;
+//  highp float a = 12.9898;
+//  highp float b = 78.233;
+//  highp float c = 43758.5453;
+  highp float a = 15.353;
+  highp float b = 59.4932;
+  highp float c = 1736.295;
   highp float dt= dot(co.xy ,vec2(a,b));
   highp float sn= mod(dt,3.14);
   return fract(sin(sn) * c);
@@ -144,20 +149,24 @@ void fragment() {
 	
 	COLOR = getColor(textureLod(screen_texture, uv, 0.0), count, TIME);
 	
-	vec2 distance_to_ball_center = (uv / sz) - ball_center;
-	
-	if (length(distance_to_ball_center) <= ball_radius) {
-//		COLOR = vec4(vec3(0.0), 1.0);
-		float col = rand(distance_to_ball_center * uv * 2.);
+	if (ball_enabled) {
+		vec2 distance_to_ball_center = (uv / sz) - ball_center;
 		
-		float col_del = smoothstep(0.05, 0.06, col);
-		if (col_del == 0.0) {
-			COLOR = vec4(vec3(0.0), 1.0);
-		}
-		
-		float col_add = smoothstep(0.94, 0.95, col);
-		if (col_add == 1.0) {
-			COLOR = vec4(vec3(1.0), 1.0);
+		if (length(distance_to_ball_center) <= ball_radius) {
+	//		COLOR = vec4(vec3(0.0), 1.0);
+			float col = rand(distance_to_ball_center * uv * 2.);
+			
+			// Turning random cells off at a threshhold
+			float col_del = smoothstep(0.1, 0.11, col);
+			if (col_del == 0.0) {
+				COLOR = vec4(vec3(0.0), 1.0);
+			}
+			
+			// Turning random cells on at a threshhold
+//			float col_add = smoothstep(0.94, 0.95, col);
+//			if (col_add == 1.0) {
+//				COLOR = vec4(vec3(1.0), 1.0);
+//			}
 		}
 	}
 }

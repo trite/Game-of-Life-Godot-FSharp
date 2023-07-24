@@ -1,0 +1,6 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://3obhlpcdwjnv"]
+
+[ext_resource type="Shader" path="res://ColorBlurOnly.gdshader" id="1_mjay5"]
+
+[resource]
+shader = ExtResource("1_mjay5")

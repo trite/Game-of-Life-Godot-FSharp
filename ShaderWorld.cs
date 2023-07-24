@@ -25,6 +25,12 @@ public partial class ShaderWorld : Control
 
   public bool game_running = false;
 
+  public float lowSpeedXCounter = 0f;
+  public float lowSpeedYCounter = 0f;
+
+  public float lowSpeedXThreshhold = 10f;
+  public float lowSpeedYThreshhold = 10f;
+
   public override void _Ready()
   {
     GetNode<RigidBody2D>("RigidBody2D").ApplyImpulse(impulseVal);
@@ -32,7 +38,7 @@ public partial class ShaderWorld : Control
 
   public override void _Process(double delta)
   {
-    var textureNode = GetNode<TextureRect>("SubViewportContainer/SubViewport/TextureRect");
+    var textureNode = GetNode<TextureRect>("SimulationContainer/SimulationViewport/Simulation");
 
     GetNode<Label>("Label").Text =
       $"game_running: {game_running}\n" +
@@ -52,7 +58,7 @@ public partial class ShaderWorld : Control
 
     if (!game_running && animation_running)
     {
-      textureNode.Texture = GetNode<SubViewport>("SubViewportContainer/SubViewport").GetTexture();
+      textureNode.Texture = GetNode<SubViewport>("SimulationContainer/SimulationViewport").GetTexture();
       textureNode.Material = null;
       animation_running = false;
     }
@@ -71,7 +77,34 @@ public partial class ShaderWorld : Control
 
     if (ball.LinearVelocity.Length() < intendedSpeed)
     {
-      ball.ApplyImpulse(ball.LinearVelocity.Normalized() * forceAdder * (float)delta);
+      // TODO: Maybe add a check on X and Y, if either is too small apply a large bump in some direction
+      var impulse = ball.LinearVelocity.Normalized() * forceAdder * (float)delta;
+
+      lowSpeedXCounter = impulse.X < 1.0f ? lowSpeedXCounter + (float)delta : 0f;
+      lowSpeedYCounter = impulse.Y < 1.0f ? lowSpeedYCounter + (float)delta : 0f;
+
+      if (lowSpeedXCounter > lowSpeedXThreshhold)
+      {
+        impulse.X = 1.0f;
+      }
+
+      if (lowSpeedYCounter > lowSpeedYThreshhold)
+      {
+        impulse.Y = 1.0f;
+      }
+
+      // if (impulse.X < 1.0f)
+      // {
+      //   lowSpeedXCounter += (float)delta;
+      // }
+      // else
+      // {
+      //   lowSpeedXCounter = 0f;
+      // }
+
+      // if (impulse.X < 1.0f) impulse.X = 1.0f;
+      // if (impulse.Y < 1.0f) impulse.Y = 1.0f;
+      ball.ApplyImpulse(impulse);
     }
   }
 

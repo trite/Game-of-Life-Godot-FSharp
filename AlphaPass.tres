@@ -1,0 +1,6 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dpqhtc1blco4m"]
+
+[ext_resource type="Shader" path="res://AlphaPass.gdshader" id="1_x0syc"]
+
+[resource]
+shader = ExtResource("1_x0syc")

@@ -9,3 +9,4 @@ shader_parameter/inside_top_left = null
 shader_parameter/inside_bottom_right = null
 shader_parameter/ball_center = null
 shader_parameter/ball_radius = null
+shader_parameter/ball_enabled = null

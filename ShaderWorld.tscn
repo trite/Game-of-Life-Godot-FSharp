@@ -1,15 +1,19 @@
-[gd_scene load_steps=13 format=3 uid="uid://d13wreuvm1jkh"]
+[gd_scene load_steps=16 format=3 uid="uid://d13wreuvm1jkh"]
 
 [ext_resource type="Script" path="res://ShaderWorld.cs" id="1_da815"]
 [ext_resource type="Material" uid="uid://bwj5f182ja683" path="res://ShaderWorld2.tres" id="2_avkev"]
 [ext_resource type="Texture2D" uid="uid://mxakh6or1g1" path="res://006-top-line-only.png" id="3_i3hd5"]
 [ext_resource type="Script" path="res://TextureRect.gd" id="4_q3vcx"]
 [ext_resource type="Texture2D" uid="uid://b63rn2eo1d44r" path="res://Circle.png" id="5_4gi82"]
-[ext_resource type="Material" uid="uid://b2hwpl11xskv1" path="res://Blur.tres" id="5_d25y0"]
+[ext_resource type="Material" uid="uid://dilhpvkxd7h24" path="res://Convolute.tres" id="5_l0fmg"]
+[ext_resource type="Material" uid="uid://dpqhtc1blco4m" path="res://AlphaPass.tres" id="5_udnkw"]
+[ext_resource type="Material" uid="uid://3obhlpcdwjnv" path="res://ColorBlurOnly.tres" id="6_5a17d"]
 [ext_resource type="Texture2D" uid="uid://clcwl4buu58qx" path="res://simple-plus.png" id="6_vpcjs"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_uf7dm"]
-viewport_path = NodePath("SubViewportContainer/SubViewport")
+viewport_path = NodePath("SimulationContainer/SimulationViewport")
+
+[sub_resource type="ImageTexture" id="ImageTexture_jn4ra"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ap3p1"]
 size = Vector2(4000, 400)
@@ -34,20 +38,21 @@ impulseVal = Vector2(0.25, 0.25)
 intendedSpeed = 2000.0
 ballRadius = 60.0
 forceAdder = Vector2(15, 15)
+ballEnabled = true
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+[node name="SimulationContainer" type="SubViewportContainer" parent="."]
 layout_mode = 0
 offset_right = 3440.0
 offset_bottom = 1440.0
 
-[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+[node name="SimulationViewport" type="SubViewport" parent="SimulationContainer"]
 transparent_bg = true
 handle_input_locally = false
 size = Vector2i(3440, 1440)
 render_target_clear_mode = 2
 render_target_update_mode = 4
 
-[node name="TextureRect" type="TextureRect" parent="SubViewportContainer/SubViewport"]
+[node name="Simulation" type="TextureRect" parent="SimulationContainer/SimulationViewport"]
 offset_right = 3440.0
 offset_bottom = 1440.0
 texture = ExtResource("3_i3hd5")
@@ -59,19 +64,49 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="DisplayRect" type="TextureRect" parent="Control"]
+[node name="InitialDisplay" type="TextureRect" parent="Control"]
 layout_mode = 0
 offset_right = 3440.0
 offset_bottom = 1440.0
 texture = SubResource("ViewportTexture_uf7dm")
 expand_mode = 3
 
-[node name="CanvasLayer" type="CanvasLayer" parent="Control"]
+[node name="AlphaPass" type="TextureRect" parent="Control"]
+material = ExtResource("5_udnkw")
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("ImageTexture_jn4ra")
 
-[node name="ColorRect" type="ColorRect" parent="Control/CanvasLayer"]
-material = ExtResource("5_d25y0")
-offset_right = 1280.0
-offset_bottom = 1024.0
+[node name="ColorBlurOnly" type="TextureRect" parent="Control"]
+material = ExtResource("6_5a17d")
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="AlphaPassLayer" type="CanvasLayer" parent="Control"]
+visible = false
+
+[node name="AlphaPass" type="ColorRect" parent="Control/AlphaPassLayer"]
+material = ExtResource("5_udnkw")
+offset_right = 3440.0
+offset_bottom = 1440.0
+
+[node name="ColurBlurOnlyLayer" type="CanvasLayer" parent="Control"]
+visible = false
+
+[node name="ColorBlurOnly" type="ColorRect" parent="Control/ColurBlurOnlyLayer"]
+material = ExtResource("6_5a17d")
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="BlurCanvasLayer" type="CanvasLayer" parent="Control"]
+visible = false
+
+[node name="Blur" type="ColorRect" parent="Control/BlurCanvasLayer"]
+material = ExtResource("5_l0fmg")
+offset_right = 3440.0
+offset_bottom = 1440.0
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 0

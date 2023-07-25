@@ -63,7 +63,7 @@ public partial class ShaderWorld : Control
     }
   }
 
-  public string vecFloor(Vector2 vec)
+  public string VecFloor(Vector2 vec)
   {
     return $"({Math.Floor(vec.X)}, {Math.Floor(vec.X)})";
   }
@@ -81,7 +81,8 @@ public partial class ShaderWorld : Control
       // $"ball_speed: {Math.Floor(GetNode<RigidBody2D>("RigidBody2D").LinearVelocity.Length())}\n" +
       // $"ball_position: {GetNode<RigidBody2D>("RigidBody2D").GlobalPosition}\n" +
       $"ship_speed: {Math.Floor(waveRiders[0].LinearVelocity.Length())}\n" +
-      $"ship_position: {vecFloor(waveRiders[0].GlobalPosition)}\n";
+      $"ship_position: {VecFloor(waveRiders[0].GlobalPosition)}\n" +
+      $"ship_thrust: {waveRiders[0].currentThrust.Length()}\n";
     // $"ball_enabled: {ballEnabled}\n" +
     // $"low_speed_x_counter: {lowSpeedXCounter}\n" +
     // $"low_speed_y_counter: {lowSpeedYCounter}\n";

@@ -12,6 +12,12 @@ public partial class WaveRider : RigidBody2D
   [Export]
   public float thrust = 100f;
 
+  [Export]
+  public float extraThrust = 150f;
+
+  [Export]
+  public Vector2 currentThrust = new(0f, 0f);
+
   const float pi = (float)Math.PI;
 
   // Called when the node enters the scene tree for the first time.
@@ -44,13 +50,22 @@ public partial class WaveRider : RigidBody2D
 
     var velocityInTargetDirection = LinearVelocity.Dot(directionToTarget);
 
-    if (velocityInTargetDirection < -1.0f)
+    var facingDirection = new Vector2(1f, 0f).Rotated(Rotation);
+
+    // if (velocityInTargetDirection < 1.0f)
+    // {
+    //   force *= 2.0f;
+    //   // force *= -velocityInTargetDirection * 0.05f * (float)delta;
+    // }
+
+    if ((facingDirection.AngleTo(directionToTarget) < 0.1f)
+      && (velocityInTargetDirection < 0f))
     {
-      // force *= 2.0f;
-      force *= -velocityInTargetDirection * 5.0f * (float)delta;
+      force += extraThrust * directionToTarget * (float)delta;
     }
 
     ApplyCentralForce(force);
+    currentThrust = force;
 
 
     // Angle to target

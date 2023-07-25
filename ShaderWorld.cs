@@ -1,5 +1,7 @@
 using Godot;
 using System;
+using System.Collections.Generic;
+
 
 public partial class ShaderWorld : Control
 {
@@ -43,9 +45,27 @@ public partial class ShaderWorld : Control
   public bool resetGameRunning = false;
   public bool resetFinished = false;
 
+  public List<WaveRider> waveRiders = new();
+
   public override void _Ready()
   {
-    GetNode<RigidBody2D>("RigidBody2D").ApplyImpulse(impulseVal);
+    // GetNode<RigidBody2D>("RigidBody2D").ApplyImpulse(impulseVal);
+
+    if (GetNode<WaveRider>("waveRider").Duplicate() is WaveRider rider)
+    {
+      rider.target = GetNode<Sprite2D>("target");
+      rider.maxRotationSpeed = (float)Math.PI / 4.0f;
+      rider.Position = new Vector2(300f, 300f);
+      AddChild(rider);
+      rider.Show();
+
+      waveRiders.Add(rider);
+    }
+  }
+
+  public string vecFloor(Vector2 vec)
+  {
+    return $"({Math.Floor(vec.X)}, {Math.Floor(vec.X)})";
   }
 
   public override void _Process(double delta)
@@ -58,11 +78,13 @@ public partial class ShaderWorld : Control
       $"game_running: {game_running}\n" +
       $"animation_running: {animation_running}\n" +
       $"FPS: {Engine.GetFramesPerSecond()}\n" +
-      $"ball_speed: {Math.Floor(GetNode<RigidBody2D>("RigidBody2D").LinearVelocity.Length())}\n" +
-      $"ball_position: {GetNode<RigidBody2D>("RigidBody2D").GlobalPosition}\n" +
-      $"ball_enabled: {ballEnabled}\n" +
-      $"low_speed_x_counter: {lowSpeedXCounter}\n" +
-      $"low_speed_y_counter: {lowSpeedYCounter}\n";
+      // $"ball_speed: {Math.Floor(GetNode<RigidBody2D>("RigidBody2D").LinearVelocity.Length())}\n" +
+      // $"ball_position: {GetNode<RigidBody2D>("RigidBody2D").GlobalPosition}\n" +
+      $"ship_speed: {Math.Floor(waveRiders[0].LinearVelocity.Length())}\n" +
+      $"ship_position: {vecFloor(waveRiders[0].GlobalPosition)}\n";
+    // $"ball_enabled: {ballEnabled}\n" +
+    // $"low_speed_x_counter: {lowSpeedXCounter}\n" +
+    // $"low_speed_y_counter: {lowSpeedYCounter}\n";
 
     if (resetRequested && !resetFinished)
     {
@@ -103,46 +125,47 @@ public partial class ShaderWorld : Control
     if (game_running)
     {
       ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_radius", ballRadius);
-      ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_center", GetNode<RigidBody2D>("RigidBody2D").GlobalPosition);
+      // ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_center", GetNode<RigidBody2D>("RigidBody2D").GlobalPosition);
+      ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_center", waveRiders[0].GlobalPosition);
       ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_enabled", ballEnabled);
     }
   }
 
   public override void _PhysicsProcess(double delta)
   {
-    var ball = GetNode<RigidBody2D>("RigidBody2D");
+    // var ball = GetNode<RigidBody2D>("RigidBody2D");
 
-    if (ball.LinearVelocity.Length() < intendedSpeed)
-    {
-      // TODO: Maybe add a check on X and Y, if either is too small apply a large bump in some direction
-      var impulse = ball.LinearVelocity.Normalized() * forceAdder * (float)delta;
+    // if (ball.LinearVelocity.Length() < intendedSpeed)
+    // {
+    //   // TODO: Maybe add a check on X and Y, if either is too small apply a large bump in some direction
+    //   var impulse = ball.LinearVelocity.Normalized() * forceAdder * (float)delta;
 
-      lowSpeedXCounter = ball.LinearVelocity.X < lowSpeedX ? lowSpeedXCounter + (float)delta : 0f;
-      lowSpeedYCounter = ball.LinearVelocity.Y < lowSpeedY ? lowSpeedYCounter + (float)delta : 0f;
+    //   lowSpeedXCounter = ball.LinearVelocity.X < lowSpeedX ? lowSpeedXCounter + (float)delta : 0f;
+    //   lowSpeedYCounter = ball.LinearVelocity.Y < lowSpeedY ? lowSpeedYCounter + (float)delta : 0f;
 
-      if (lowSpeedXCounter > lowSpeedXThreshhold)
-      {
-        impulse.X = 1.0f;
-      }
+    //   if (lowSpeedXCounter > lowSpeedXThreshhold)
+    //   {
+    //     impulse.X = 1.0f;
+    //   }
 
-      if (lowSpeedYCounter > lowSpeedYThreshhold)
-      {
-        impulse.Y = 1.0f;
-      }
+    //   if (lowSpeedYCounter > lowSpeedYThreshhold)
+    //   {
+    //     impulse.Y = 1.0f;
+    //   }
 
-      // if (impulse.X < 1.0f)
-      // {
-      //   lowSpeedXCounter += (float)delta;
-      // }
-      // else
-      // {
-      //   lowSpeedXCounter = 0f;
-      // }
+    //   // if (impulse.X < 1.0f)
+    //   // {
+    //   //   lowSpeedXCounter += (float)delta;
+    //   // }
+    //   // else
+    //   // {
+    //   //   lowSpeedXCounter = 0f;
+    //   // }
 
-      // if (impulse.X < 1.0f) impulse.X = 1.0f;
-      // if (impulse.Y < 1.0f) impulse.Y = 1.0f;
-      ball.ApplyImpulse(impulse);
-    }
+    //   // if (impulse.X < 1.0f) impulse.X = 1.0f;
+    //   // if (impulse.Y < 1.0f) impulse.Y = 1.0f;
+    //   ball.ApplyImpulse(impulse);
+    // }
   }
 
   public override void _UnhandledInput(InputEvent @event)

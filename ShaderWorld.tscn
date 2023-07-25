@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://d13wreuvm1jkh"]
+[gd_scene load_steps=17 format=3 uid="uid://d13wreuvm1jkh"]
 
 [ext_resource type="Script" path="res://ShaderWorld.cs" id="1_da815"]
 [ext_resource type="Material" uid="uid://bwj5f182ja683" path="res://ShaderWorld2.tres" id="2_avkev"]
@@ -9,6 +9,8 @@
 [ext_resource type="Material" uid="uid://dpqhtc1blco4m" path="res://AlphaPass.tres" id="5_udnkw"]
 [ext_resource type="Material" uid="uid://3obhlpcdwjnv" path="res://ColorBlurOnly.tres" id="6_5a17d"]
 [ext_resource type="Texture2D" uid="uid://clcwl4buu58qx" path="res://simple-plus.png" id="6_vpcjs"]
+[ext_resource type="Texture2D" uid="uid://b2ydt4cgssuto" path="res://ship003.png" id="8_brni0"]
+[ext_resource type="Script" path="res://WaveRider.cs" id="8_sqaie"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_uf7dm"]
 viewport_path = NodePath("SimulationContainer/SimulationViewport")
@@ -20,8 +22,7 @@ size = Vector2(4000, 400)
 size = Vector2(400, 2000)
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_2ygl4"]
-friction = 0.0
-bounce = 1.0
+friction = 0.9
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_qkhh2"]
 
@@ -36,9 +37,8 @@ startingImage = ExtResource("3_i3hd5")
 impulseVal = Vector2(0.25, 0.25)
 intendedSpeed = 2000.0
 ballRadius = 60.0
-forceAdder = Vector2(15, 15)
 ballEnabled = true
-maxFPS = 0
+maxFPS = 60
 
 [node name="SimulationContainer" type="SubViewportContainer" parent="."]
 layout_mode = 0
@@ -109,6 +109,9 @@ offset_right = 3385.0
 offset_bottom = 1385.0
 
 [node name="Bounding Box" type="StaticBody2D" parent="."]
+visible = false
+collision_layer = 0
+collision_mask = 0
 
 [node name="Bottom" type="CollisionShape2D" parent="Bounding Box"]
 position = Vector2(1720, 1640)
@@ -126,22 +129,42 @@ shape = SubResource("RectangleShape2D_nk6v8")
 position = Vector2(3640, 720)
 shape = SubResource("RectangleShape2D_nk6v8")
 
-[node name="RigidBody2D" type="RigidBody2D" parent="."]
+[node name="waveRider" type="RigidBody2D" parent="." node_paths=PackedStringArray("target")]
+visible = false
+mass = 0.1
+physics_material_override = SubResource("PhysicsMaterial_2ygl4")
+gravity_scale = 0.0
+lock_rotation = true
+script = ExtResource("8_sqaie")
+target = NodePath("../target")
+maxRotationSpeed = 3.14
+thrust = 500.0
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="waveRider"]
+polygon = PackedVector2Array(-55, 47, -55, 31, -52, 11, -47, 0, -47, -40, 0, -56, 47, -40, 47, 0, 51, 10, 55, 30, 55, 47, 30, 13, 20, -19, 12, -28, -1, -31, -14, -27, -21, -17, -29, 13)
+
+[node name="Sprite2D" type="Sprite2D" parent="waveRider"]
+modulate = Color(1, 1, 1, 0.588235)
+texture = ExtResource("8_brni0")
+
+[node name="BallRigidBody" type="RigidBody2D" parent="."]
+visible = false
 position = Vector2(1720, 720)
+collision_layer = 0
+collision_mask = 0
 mass = 0.01
 physics_material_override = SubResource("PhysicsMaterial_2ygl4")
 gravity_scale = 0.0
 lock_rotation = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D"]
+[node name="BallCollisionShape" type="CollisionShape2D" parent="BallRigidBody"]
 scale = Vector2(5, 5)
 shape = SubResource("CircleShape2D_qkhh2")
 
-[node name="Sprite2D" type="Sprite2D" parent="RigidBody2D"]
+[node name="BallSprite" type="Sprite2D" parent="BallRigidBody"]
 modulate = Color(1, 1, 1, 0.0392157)
 texture = ExtResource("5_4gi82")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-visible = false
+[node name="target" type="Sprite2D" parent="."]
 position = Vector2(1570, 870)
 texture = ExtResource("6_vpcjs")

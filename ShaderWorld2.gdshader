@@ -163,10 +163,10 @@ void fragment() {
 			}
 			
 			// Turning random cells on at a threshhold
-//			float col_add = smoothstep(0.94, 0.95, col);
-//			if (col_add == 1.0) {
-//				COLOR = vec4(vec3(1.0), 1.0);
-//			}
+			float col_add = smoothstep(0.94, 0.95, col);
+			if (col_add == 1.0) {
+				COLOR = vec4(vec3(1.0), 1.0);
+			}
 		}
 	}
 }

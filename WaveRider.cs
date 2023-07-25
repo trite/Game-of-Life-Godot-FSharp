@@ -50,7 +50,7 @@ public partial class WaveRider : RigidBody2D
 
     var velocityInTargetDirection = LinearVelocity.Dot(directionToTarget);
 
-    var facingDirection = new Vector2(1f, 0f).Rotated(Rotation);
+    var facingDirection = new Vector2(0f, -1f).Rotated(Rotation);
 
     // if (velocityInTargetDirection < 1.0f)
     // {
@@ -58,8 +58,8 @@ public partial class WaveRider : RigidBody2D
     //   // force *= -velocityInTargetDirection * 0.05f * (float)delta;
     // }
 
-    if ((facingDirection.AngleTo(directionToTarget) < 0.1f)
-      && (velocityInTargetDirection < 0f))
+    if ((facingDirection.AngleTo(directionToTarget) < 0.5f)
+      && (velocityInTargetDirection < 100f))
     {
       force += extraThrust * directionToTarget * (float)delta;
     }

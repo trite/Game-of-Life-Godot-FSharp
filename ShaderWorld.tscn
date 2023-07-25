@@ -36,9 +36,9 @@ shaderMaterial = ExtResource("2_avkev")
 startingImage = ExtResource("3_i3hd5")
 impulseVal = Vector2(0.25, 0.25)
 intendedSpeed = 2000.0
-ballRadius = 60.0
+ballRadius = 10.0
 ballEnabled = true
-maxFPS = 60
+maxFPS = 144
 
 [node name="SimulationContainer" type="SubViewportContainer" parent="."]
 layout_mode = 0
@@ -137,9 +137,9 @@ gravity_scale = 0.0
 lock_rotation = true
 script = ExtResource("8_sqaie")
 target = NodePath("../target")
-maxRotationSpeed = 3.14
+maxRotationSpeed = 0.4
 thrust = 500.0
-extraThrust = 750.0
+extraThrust = 500.0
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="waveRider"]
 polygon = PackedVector2Array(-55, 47, -55, 31, -52, 11, -47, 0, -47, -40, 0, -56, 47, -40, 47, 0, 51, 10, 55, 30, 55, 47, 30, 13, 20, -19, 12, -28, -1, -31, -14, -27, -21, -17, -29, 13)

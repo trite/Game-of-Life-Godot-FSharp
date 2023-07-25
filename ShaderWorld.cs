@@ -21,6 +21,12 @@ public partial class ShaderWorld : Control
   public float ballRadius = 140.0f;
 
   [Export]
+  public float ballRadiusMin = 5f;
+
+  [Export]
+  public float ballRadiusMax = 20f;
+
+  [Export]
   public Vector2 forceAdder = new(1.08f, 1.04f);
 
   [Export]
@@ -28,6 +34,9 @@ public partial class ShaderWorld : Control
 
   [Export]
   public int maxFPS = 100;
+
+  [Export]
+  public float targetProgressModifier = 1.0f;
 
   public bool animation_running = false;
 
@@ -47,13 +56,17 @@ public partial class ShaderWorld : Control
 
   public List<WaveRider> waveRiders = new();
 
+  public PathFollow2D? targetPathFollow = null;
+
   public override void _Ready()
   {
     // GetNode<RigidBody2D>("RigidBody2D").ApplyImpulse(impulseVal);
 
+    targetPathFollow = GetNode<PathFollow2D>("targetPath/targetPathFollow");
+
     if (GetNode<WaveRider>("waveRider").Duplicate() is WaveRider rider)
     {
-      rider.target = GetNode<Sprite2D>("target");
+      rider.target = GetNode<Sprite2D>("targetPath/targetPathFollow/target");
       rider.maxRotationSpeed = (float)Math.PI / 4.0f;
       rider.Position = new Vector2(300f, 300f);
       AddChild(rider);
@@ -72,6 +85,9 @@ public partial class ShaderWorld : Control
   {
     Engine.MaxFps = maxFPS;
 
+    if (targetPathFollow != null)
+      targetPathFollow.Progress += targetProgressModifier * (float)delta;
+
     var textureNode = GetNode<TextureRect>("SimulationContainer/SimulationViewport/Simulation");
 
     GetNode<Label>("Label").Text =
@@ -82,7 +98,8 @@ public partial class ShaderWorld : Control
       // $"ball_position: {GetNode<RigidBody2D>("RigidBody2D").GlobalPosition}\n" +
       $"ship_speed: {Math.Floor(waveRiders[0].LinearVelocity.Length())}\n" +
       $"ship_position: {VecFloor(waveRiders[0].GlobalPosition)}\n" +
-      $"ship_thrust: {waveRiders[0].currentThrust.Length()}\n";
+      $"ship_thrust: {waveRiders[0].currentThrust.Length()}\n" +
+      $"ship_thrust_visual: {waveRiders[0].currentThrustVisual}\n";
     // $"ball_enabled: {ballEnabled}\n" +
     // $"low_speed_x_counter: {lowSpeedXCounter}\n" +
     // $"low_speed_y_counter: {lowSpeedYCounter}\n";
@@ -125,7 +142,9 @@ public partial class ShaderWorld : Control
 
     if (game_running)
     {
-      ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_radius", ballRadius);
+      var adjustedRadius = ballRadiusMin + (waveRiders[0].currentThrustVisual * (ballRadiusMax - ballRadiusMin));
+
+      ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_radius", adjustedRadius);
       // ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_center", GetNode<RigidBody2D>("RigidBody2D").GlobalPosition);
       ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_center", waveRiders[0].GlobalPosition);
       ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_enabled", ballEnabled);

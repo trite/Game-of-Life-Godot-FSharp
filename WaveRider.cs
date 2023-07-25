@@ -13,10 +13,35 @@ public partial class WaveRider : RigidBody2D
   public float thrust = 100f;
 
   [Export]
-  public float extraThrust = 150f;
+  public float maxExtraThrust = 150f;
+
+  [Export]
+  public float extraThrustMinDistance = 100f;
+
+  [Export]
+  public float extraThrustMaxDistance = 1000f;
 
   [Export]
   public Vector2 currentThrust = new(0f, 0f);
+
+  // Needs to be > 0 and <= 1
+  [Export]
+  public float currentThrustVisual = 0.1f;
+
+  [Export]
+  public float currentThrustVisualMin = 0.1f;
+
+  [Export]
+  public float currentThrustVisualMax = 1.0f;
+
+  [Export]
+  public float extraThrustAngle = 0.5f;
+
+  [Export]
+  public float distanceFromTarget = 0.0f;
+
+  // [Export]
+  // public float extraThrustWhenUnderVelocity = 100f;
 
   const float pi = (float)Math.PI;
 
@@ -28,6 +53,26 @@ public partial class WaveRider : RigidBody2D
   // Called every frame. 'delta' is the elapsed time since the previous frame.
   public override void _Process(double delta)
   {
+  }
+
+  public float normalize(float min, float max, float value)
+  {
+    if (max <= min)
+    {
+      throw new Exception("can't normalize when max <= min");
+    }
+
+    if (value <= min)
+    {
+      return 0f;
+    }
+
+    if (value >= max)
+    {
+      return 1f;
+    }
+
+    return (value - min) / (max - min);
   }
 
   public override void _PhysicsProcess(double delta)
@@ -52,17 +97,42 @@ public partial class WaveRider : RigidBody2D
 
     var facingDirection = new Vector2(0f, -1f).Rotated(Rotation);
 
+    var distanceToTarget = GlobalPosition.DistanceTo(target.GlobalPosition);
+
+    // Just used for debugging for now
+    distanceFromTarget = distanceToTarget;
+
     // if (velocityInTargetDirection < 1.0f)
     // {
     //   force *= 2.0f;
     //   // force *= -velocityInTargetDirection * 0.05f * (float)delta;
     // }
 
-    if ((facingDirection.AngleTo(directionToTarget) < 0.5f)
-      && (velocityInTargetDirection < 100f))
+    if ((facingDirection.AngleTo(directionToTarget) < extraThrustAngle)
+      && (distanceToTarget > extraThrustMinDistance))
+    // && (velocityInTargetDirection < extraThrustWhenUnderVelocity))
     {
-      force += extraThrust * directionToTarget * (float)delta;
+      var extraThrust = Math.Min(
+        maxExtraThrust,
+        (distanceToTarget - extraThrustMinDistance)
+          / (extraThrustMaxDistance - extraThrustMinDistance)
+          * maxExtraThrust);
+
+      currentThrustVisual = normalize(
+        extraThrustMinDistance,
+        extraThrustMaxDistance,
+        GlobalPosition.DistanceTo(target.GlobalPosition));
+
+
+      // currentThrustVisual = (extraThrust - extraThrustMinDistance)
+      //   / (extraThrustMaxDistance - extraThrustMinDistance);
+
+      force += extraThrust * facingDirection.Normalized() * (float)delta;
     }
+
+    currentThrustVisual = Mathf.Max(currentThrustVisual, currentThrustVisualMin);
+
+    currentThrustVisual = force.Length() / (thrust + maxExtraThrust);
 
     ApplyCentralForce(force);
     currentThrust = force;

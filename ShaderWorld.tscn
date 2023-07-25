@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://d13wreuvm1jkh"]
+[gd_scene load_steps=18 format=3 uid="uid://d13wreuvm1jkh"]
 
 [ext_resource type="Script" path="res://ShaderWorld.cs" id="1_da815"]
 [ext_resource type="Material" uid="uid://bwj5f182ja683" path="res://ShaderWorld2.tres" id="2_avkev"]
@@ -22,9 +22,15 @@ size = Vector2(4000, 400)
 size = Vector2(400, 2000)
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_2ygl4"]
-friction = 0.9
+friction = 0.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_qkhh2"]
+
+[sub_resource type="Curve2D" id="Curve2D_un301"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 430, 333, 0, 0, 0, 0, 1117, 511, 0, 0, 0, 0, 1476, 1088, 0, 0, 0, 0, 2560, 946, 0, 0, 0, 0, 2800, 219, 0, 0, 0, 0, 3200, 639, 0, 0, 0, 0, 2847, 1115, 0, 0, 0, 0, 2322, 311, 0, 0, 0, 0, 1673, 304, 0, 0, 0, 0, 1242, 973, 0, 0, 0, 0, 567, 1101, 0, 0, 0, 0, 261, 760, 0, 0, 0, 0, 430, 333)
+}
+point_count = 13
 
 [node name="ShaderWorld" type="Control"]
 layout_mode = 3
@@ -39,6 +45,7 @@ intendedSpeed = 2000.0
 ballRadius = 10.0
 ballEnabled = true
 maxFPS = 144
+targetProgressModifier = 100.0
 
 [node name="SimulationContainer" type="SubViewportContainer" parent="."]
 layout_mode = 0
@@ -135,11 +142,14 @@ mass = 0.1
 physics_material_override = SubResource("PhysicsMaterial_2ygl4")
 gravity_scale = 0.0
 lock_rotation = true
+linear_damp = 1.0
 script = ExtResource("8_sqaie")
-target = NodePath("../target")
-maxRotationSpeed = 0.4
-thrust = 500.0
-extraThrust = 500.0
+target = NodePath("../targetPath/targetPathFollow/target")
+maxRotationSpeed = 0.5
+thrust = 1500.0
+maxExtraThrust = 2500.0
+extraThrustMinDistance = 10.0
+extraThrustAngle = 1.0
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="waveRider"]
 polygon = PackedVector2Array(-55, 47, -55, 31, -52, 11, -47, 0, -47, -40, 0, -56, 47, -40, 47, 0, 51, 10, 55, 30, 55, 47, 30, 13, 20, -19, 12, -28, -1, -31, -14, -27, -21, -17, -29, 13)
@@ -166,6 +176,14 @@ shape = SubResource("CircleShape2D_qkhh2")
 modulate = Color(1, 1, 1, 0.0392157)
 texture = ExtResource("5_4gi82")
 
-[node name="target" type="Sprite2D" parent="."]
-position = Vector2(1570, 870)
+[node name="targetPath" type="Path2D" parent="."]
+curve = SubResource("Curve2D_un301")
+
+[node name="targetPathFollow" type="PathFollow2D" parent="targetPath"]
+position = Vector2(829.75, 436.574)
+rotation = 0.253523
+progress = 412.95
+
+[node name="target" type="Sprite2D" parent="targetPath/targetPathFollow"]
+rotation = -0.253523
 texture = ExtResource("6_vpcjs")

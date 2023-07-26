@@ -15,6 +15,11 @@ uniform bool ball_enabled;
 const float vBarrier = 100.0;
 const float vBarrierWidthHalf = 25.0;
 
+// This has to have a fixed size, for now I'm just setting a
+//   decently large value (50) and only populating the array with
+//   values when they exist. It seems to work so far :fingers-crossed:
+uniform vec3[50] ball_positions_and_sizes;
+
 highp float rand(vec2 co)
 {
 //  highp float a = 12.9898;
@@ -150,23 +155,42 @@ void fragment() {
 	COLOR = getColor(textureLod(screen_texture, uv, 0.0), count, TIME);
 	
 	if (ball_enabled) {
-		vec2 distance_to_ball_center = (uv / sz) - ball_center;
-		
-		if (length(distance_to_ball_center) <= ball_radius) {
-	//		COLOR = vec4(vec3(0.0), 1.0);
-			float col = rand(distance_to_ball_center * uv * 2.);
+		for (int i = 0; i < ball_positions_and_sizes.length(); i++) {
+			vec2 distance_to_ball_center = (uv / sz) - ball_positions_and_sizes[i].xy;
+			float current_ball_radius = ball_positions_and_sizes[i].z;
 			
-			// Turning random cells off at a threshhold
-			float col_del = smoothstep(0.1, 0.11, col);
-			if (col_del == 0.0) {
-				COLOR = vec4(vec3(0.0), 1.0);
-			}
+			if (length(distance_to_ball_center) <= current_ball_radius) {
+				float col = rand(distance_to_ball_center * uv * 2.);
 			
-			// Turning random cells on at a threshhold
-			float col_add = smoothstep(0.94, 0.95, col);
-			if (col_add == 1.0) {
-				COLOR = vec4(vec3(1.0), 1.0);
+				float col_del = smoothstep(0.1, 0.11, col);
+				if (col_del == 0.0) {
+					COLOR = vec4(vec3(0.0), 1.0);
+				}
+
+				// Turning random cells on at a threshhold
+				float col_add = smoothstep(0.94, 0.95, col);
+				if (col_add == 1.0) {
+					COLOR = vec4(vec3(1.0), 1.0);
+				}
 			}
 		}
+//		vec2 distance_to_ball_center = (uv / sz) - ball_center;
+//
+//		if (length(distance_to_ball_center) <= ball_radius) {
+//	//		COLOR = vec4(vec3(0.0), 1.0);
+//			float col = rand(distance_to_ball_center * uv * 2.);
+//
+//			// Turning random cells off at a threshhold
+//			float col_del = smoothstep(0.1, 0.11, col);
+//			if (col_del == 0.0) {
+//				COLOR = vec4(vec3(0.0), 1.0);
+//			}
+//
+//			// Turning random cells on at a threshhold
+//			float col_add = smoothstep(0.94, 0.95, col);
+//			if (col_add == 1.0) {
+//				COLOR = vec4(vec3(1.0), 1.0);
+//			}
+//		}
 	}
 }

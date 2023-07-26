@@ -41,12 +41,32 @@ public partial class WaveRider : RigidBody2D
   public float distanceFromTarget = 0.0f;
 
 
-  // Reworking thruster stuff, the previous one has become terrible
+  // Ditch this rework of thrust, I've had time to consider a better way
   [Export]
   public float extraThrustPotentialNormalized = 0f;
 
   [Export]
   public bool extraThrustEnabled = false;
+
+  // Begin new thrust stuff
+  [Export]
+  public float newThrustPct = 0f;
+
+  [Export]
+  public float newThrustMin = 100f;
+
+  [Export]
+  public float newThrustMax = 1000f;
+
+  [Export]
+  public float newExtraThrustMinDistance = 100f;
+
+  [Export]
+  public float newExtraThrustMaxDistance = 500f;
+
+  [Export]
+  public float newThrustAmount = 0f;
+
 
   // [Export]
   // public float extraThrustWhenUnderVelocity = 100f;
@@ -110,49 +130,39 @@ public partial class WaveRider : RigidBody2D
     // Just used for debugging for now
     distanceFromTarget = distanceToTarget;
 
-    // if (velocityInTargetDirection < 1.0f)
-    // {
-    //   force *= 2.0f;
-    //   // force *= -velocityInTargetDirection * 0.05f * (float)delta;
-    // }
-
+    // TODO: Remove after rework
     extraThrustPotentialNormalized = normalize(
       extraThrustMinDistance,
       extraThrustMaxDistance,
       GlobalPosition.DistanceTo(target.GlobalPosition));
 
-    extraThrustEnabled = facingDirection.AngleTo(directionToTarget) < extraThrustAngle;
-
-    // TODO: Leaving off here
+    // New with rework
 
     if ((facingDirection.AngleTo(directionToTarget) < extraThrustAngle)
-      && (distanceToTarget > extraThrustMinDistance))
-    // && (velocityInTargetDirection < extraThrustWhenUnderVelocity))
+      && (distanceToTarget > newExtraThrustMinDistance))
     {
-      var extraThrust = Math.Min(
-        maxExtraThrust,
-        (distanceToTarget - extraThrustMinDistance)
-          / (extraThrustMaxDistance - extraThrustMinDistance)
-          * maxExtraThrust);
-
-      currentThrustVisual = normalize(
-        extraThrustMinDistance,
-        extraThrustMaxDistance,
+      newThrustPct = normalize(
+        newExtraThrustMinDistance,
+        newExtraThrustMaxDistance,
         GlobalPosition.DistanceTo(target.GlobalPosition));
-
-
-      // currentThrustVisual = (extraThrust - extraThrustMinDistance)
-      //   / (extraThrustMaxDistance - extraThrustMinDistance);
-
-      force += extraThrust * facingDirection.Normalized() * (float)delta;
+    }
+    else
+    {
+      newThrustPct = 0f;
     }
 
-    currentThrustVisual = Mathf.Max(currentThrustVisual, currentThrustVisualMin);
+    newThrustAmount = (newThrustPct * thrust) + newThrustMin;
 
-    currentThrustVisual = force.Length() / (thrust + maxExtraThrust);
+    // extraThrustEnabled = facingDirection.AngleTo(directionToTarget) < extraThrustAngle;
 
+    force = newThrustAmount * facingDirection.Normalized() * (float)delta;
+
+    // currentThrustVisual = Mathf.Max(currentThrustVisual, currentThrustVisualMin);
+
+    // currentThrustVisual = force.Length() / (thrust + maxExtraThrust);
+
+    newThrustAmount = force.Length();
     ApplyCentralForce(force);
-    currentThrust = force;
 
 
     // Angle to target

@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 using System;
 using System.Collections.Generic;
 
@@ -58,22 +59,59 @@ public partial class ShaderWorld : Control
 
   public PathFollow2D? targetPathFollow = null;
 
+  public RandomNumberGenerator rng = new RandomNumberGenerator();
+
+  [Export]
+  public float waveRiderMinThrustRangeMin = 500f;
+
+  [Export]
+  public float waveRiderMinThrustRangeMax = 1500f;
+
+  [Export]
+  public float waveRiderMaxThrustRangeMin = 3000f;
+
+  [Export]
+  public float waveRiderMaxThrustRangeMax = 5000f;
+
+  [Export]
+  public float waveRiderMaxRotationSpeedMin = (float)Math.PI / 4.0f;
+
+  [Export]
+  public float waveRiderMaxRotationSpeedMax = (float)Math.PI / 2.0f;
+
+  public void SpawnWaveRider()
+  {
+    if (GetNode<WaveRider>("waveRider").Duplicate() is WaveRider rider)
+    {
+      rider.target = GetNode<Sprite2D>("targetPath/targetPathFollow/target");
+      rider.maxRotationSpeed = (float)Math.PI / 4.0f;
+
+      // Random position in a 3240/1240 area (-100px on each side)
+      rider.Position = new Vector2(rng.RandfRange(100f, 3340f), rng.RandfRange(100f, 1340f));
+
+      // Random rotation
+      rider.Rotation = rng.RandfRange(0f, (float)Math.PI * 2.0f);
+
+      // Random value ranges for various wave rider behaviors
+      rider.newThrustMin = rng.RandfRange(waveRiderMinThrustRangeMin, waveRiderMinThrustRangeMax);
+      rider.newThrustMax = rng.RandfRange(waveRiderMaxThrustRangeMin, waveRiderMaxThrustRangeMax);
+      rider.maxRotationSpeed = rng.RandfRange(waveRiderMaxRotationSpeedMin, waveRiderMaxRotationSpeedMax);
+
+
+      AddChild(rider);
+      rider.Show();
+
+      waveRiders.Add(rider);
+    }
+  }
+
   public override void _Ready()
   {
     // GetNode<RigidBody2D>("RigidBody2D").ApplyImpulse(impulseVal);
 
     targetPathFollow = GetNode<PathFollow2D>("targetPath/targetPathFollow");
 
-    if (GetNode<WaveRider>("waveRider").Duplicate() is WaveRider rider)
-    {
-      rider.target = GetNode<Sprite2D>("targetPath/targetPathFollow/target");
-      rider.maxRotationSpeed = (float)Math.PI / 4.0f;
-      rider.Position = new Vector2(300f, 300f);
-      AddChild(rider);
-      rider.Show();
-
-      waveRiders.Add(rider);
-    }
+    SpawnWaveRider();
   }
 
   public string VecFloor(Vector2 vec)
@@ -94,16 +132,14 @@ public partial class ShaderWorld : Control
       $"game_running: {game_running}\n" +
       $"animation_running: {animation_running}\n" +
       $"FPS: {Engine.GetFramesPerSecond()}\n" +
-      // $"ball_speed: {Math.Floor(GetNode<RigidBody2D>("RigidBody2D").LinearVelocity.Length())}\n" +
-      // $"ball_position: {GetNode<RigidBody2D>("RigidBody2D").GlobalPosition}\n" +
       $"ship_speed: {Math.Floor(waveRiders[0].LinearVelocity.Length())}\n" +
       $"ship_position: {VecFloor(waveRiders[0].GlobalPosition)}\n" +
       $"ship_thrust: {waveRiders[0].currentThrust.Length()}\n" +
       $"ship_thrust_visual: {waveRiders[0].currentThrustVisual}\n" +
-      $"ship_distance_from_target: {Math.Floor(waveRiders[0].distanceFromTarget)}\n";
-    // $"ball_enabled: {ballEnabled}\n" +
-    // $"low_speed_x_counter: {lowSpeedXCounter}\n" +
-    // $"low_speed_y_counter: {lowSpeedYCounter}\n";
+      $"ship_distance_from_target: {Math.Floor(waveRiders[0].distanceFromTarget)}\n" +
+      $"ship_new_thrust_pct: {waveRiders[0].newThrustPct}\n" +
+      $"ship_new_thrust_amount: {waveRiders[0].newThrustAmount}\n" +
+      $"ball_radius: {Math.Floor(ballRadius)}\n";
 
     if (resetRequested && !resetFinished)
     {
@@ -143,9 +179,18 @@ public partial class ShaderWorld : Control
 
     if (game_running)
     {
-      var adjustedRadius = ballRadiusMin + (waveRiders[0].currentThrustVisual * (ballRadiusMax - ballRadiusMin));
+      ballRadius = ballRadiusMin + (waveRiders[0].newThrustPct * (ballRadiusMax - ballRadiusMin));
 
-      ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_radius", adjustedRadius);
+      var ballPositionsAndSizes = new Array<Vector3>();
+
+      foreach (var rider in waveRiders)
+      {
+        ballPositionsAndSizes.Add(new Vector3(rider.GlobalPosition.X, rider.GlobalPosition.Y, ballRadius));
+      }
+
+      ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_positions_and_sizes", ballPositionsAndSizes);
+
+      ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_radius", ballRadius);
       // ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_center", GetNode<RigidBody2D>("RigidBody2D").GlobalPosition);
       ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_center", waveRiders[0].GlobalPosition);
       ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_enabled", ballEnabled);
@@ -208,6 +253,11 @@ public partial class ShaderWorld : Control
       // var textureNode = GetNode<TextureRect>("SimulationContainer/SimulationViewport/Simulation");
       // textureNode.Texture = startingImage;
       GD.Print("Starting simulation reset...");
+    }
+
+    if (@event.IsActionPressed("spawn_wave_rider"))
+    {
+      SpawnWaveRider();
     }
   }
 }

@@ -74,16 +74,46 @@ public partial class ShaderWorld : Control
   public float waveRiderMaxThrustRangeMax = 5000f;
 
   [Export]
-  public float waveRiderMaxRotationSpeedMin = (float)Math.PI / 4.0f;
+  public float waveRiderMaxRotationSpeedMin = (float)Math.PI / 8.0f;
 
   [Export]
-  public float waveRiderMaxRotationSpeedMax = (float)Math.PI / 2.0f;
+  public float waveRiderMaxRotationSpeedMax = (float)Math.PI / 4.0f;
+
+  [Export]
+  public float targetProgressModifierMin = 100f;
+
+  [Export]
+  public float targetProgressModifierMax = 300f;
+
+  // TODO: Should be able to search for these instead of manually generating the
+  //         list, grouping targets/paths under a single node might make it easier
+  // [Export]
+  // public Array<Sprite2D> targets = new();
+
+  // [Export]
+  // public Array<PathFollow2D> targetPathFollows = new();
+
+  [Export]
+  public Array<pathFollower> targets = new();
+
+  [Export]
+  public float scaleMin = 0.1f;
+
+  [Export]
+  public float scaleMax = 0.5f;
+
+  public pathFollower GetRandomTarget(string riderName)
+  {
+    var result = targets[(int)Math.Floor(rng.RandfRange(0f, targets.Count - 1))];
+    GD.Print($"Setting target for {riderName} to: {result.Name}");
+    return result;
+  }
 
   public void SpawnWaveRider()
   {
     if (GetNode<WaveRider>("waveRider").Duplicate() is WaveRider rider)
     {
-      rider.target = GetNode<Sprite2D>("targetPath/targetPathFollow/target");
+      // rider.target = GetNode<Sprite2D>("targetPath/targetPathFollow/target");
       rider.maxRotationSpeed = (float)Math.PI / 4.0f;
 
       // Random position in a 3240/1240 area (-100px on each side)
@@ -97,6 +127,21 @@ public partial class ShaderWorld : Control
       rider.newThrustMax = rng.RandfRange(waveRiderMaxThrustRangeMin, waveRiderMaxThrustRangeMax);
       rider.maxRotationSpeed = rng.RandfRange(waveRiderMaxRotationSpeedMin, waveRiderMaxRotationSpeedMax);
 
+      // Pick a random starting target
+      rider.target = GetRandomTarget(rider.Name);
+
+      // Just setting the scale won't work
+      // rider.Scale *= rng.RandfRange(scaleMin, scaleMax);
+      // var collision = rider.GetNode<CollisionShape2D>("waveRiderCollisionBox");
+      // var sprite = rider.GetNode<Sprite2D>("waveRiderSprite");
+
+      var scale = rng.RandfRange(scaleMin, scaleMax);
+
+      rider.GetNode<CollisionShape2D>("waveRiderCollisionBox").Scale = new Vector2(scale, scale);
+      rider.GetNode<Sprite2D>("waveRiderSprite").Scale = new Vector2(scale, scale);
+
+      // collision.Scale = new Vector2(scale, scale);
+      // sprite.Scale = new Vector2(scale, scale);
 
       AddChild(rider);
       rider.Show();
@@ -105,11 +150,56 @@ public partial class ShaderWorld : Control
     }
   }
 
+  public void DespawnWaveRider()
+  {
+    if (waveRiders.Count > 0)
+    {
+      var rider = waveRiders[0];
+      waveRiders.RemoveAt(0);
+      rider.QueueFree();
+    }
+  }
+
+  public void RandomizeTargetsParameters()
+  {
+
+    foreach (var rider in waveRiders)
+    {
+      rider.target = GetRandomTarget(rider.Name);
+    }
+
+    foreach (var target in targets)
+    {
+      target.targetProgressModifier = rng.RandfRange(-targetProgressModifier, targetProgressModifier);
+    }
+  }
+
   public override void _Ready()
   {
     // GetNode<RigidBody2D>("RigidBody2D").ApplyImpulse(impulseVal);
 
-    targetPathFollow = GetNode<PathFollow2D>("targetPath/targetPathFollow");
+    // targetPathFollow = GetNode<PathFollow2D>("targetPath/targetPathFollow");
+
+    // Find all the targets and add them to the list
+    // TODO: Couldn't get this to work, manually adding the nodes for now instead
+    // var nodes = GetTree().GetNodesInGroup("targets");
+
+    // foreach (var node in nodes)
+    // {
+    //   if (node is PathFollower target)
+    //   {
+    //     targets.Add(target);
+    //   }
+    // }
+
+    foreach (var target in targets)
+    {
+      target.ProgressRatio = rng.RandfRange(0f, 1f);
+      // TODO: Speed needs to be moved from ShaderWorld to the PathFollow2D nodes
+      //         Then we can randomize the speed here
+    }
+
+    RandomizeTargetsParameters();
 
     SpawnWaveRider();
   }
@@ -123,23 +213,30 @@ public partial class ShaderWorld : Control
   {
     Engine.MaxFps = maxFPS;
 
-    if (targetPathFollow != null)
-      targetPathFollow.Progress += targetProgressModifier * (float)delta;
+    // if (targetPathFollow != null)
+    //   targetPathFollow.Progress += targetProgressModifier * (float)delta;
+
+    foreach (var target in targets)
+    {
+      // TODO: Once progress rate is moved to the PathFollow2D node this
+      //         should use it instead of `targetProgressModifier`
+      target.Progress += target.targetProgressModifier * (float)delta;
+    }
 
     var textureNode = GetNode<TextureRect>("SimulationContainer/SimulationViewport/Simulation");
 
     GetNode<Label>("Label").Text =
       $"game_running: {game_running}\n" +
       $"animation_running: {animation_running}\n" +
-      $"FPS: {Engine.GetFramesPerSecond()}\n" +
-      $"ship_speed: {Math.Floor(waveRiders[0].LinearVelocity.Length())}\n" +
-      $"ship_position: {VecFloor(waveRiders[0].GlobalPosition)}\n" +
-      $"ship_thrust: {waveRiders[0].currentThrust.Length()}\n" +
-      $"ship_thrust_visual: {waveRiders[0].currentThrustVisual}\n" +
-      $"ship_distance_from_target: {Math.Floor(waveRiders[0].distanceFromTarget)}\n" +
-      $"ship_new_thrust_pct: {waveRiders[0].newThrustPct}\n" +
-      $"ship_new_thrust_amount: {waveRiders[0].newThrustAmount}\n" +
-      $"ball_radius: {Math.Floor(ballRadius)}\n";
+      $"FPS: {Engine.GetFramesPerSecond()}\n";
+    // $"ship_speed: {Math.Floor(waveRiders[0].LinearVelocity.Length())}\n" +
+    // $"ship_position: {VecFloor(waveRiders[0].GlobalPosition)}\n" +
+    // $"ship_thrust: {waveRiders[0].currentThrust.Length()}\n" +
+    // $"ship_thrust_visual: {waveRiders[0].currentThrustVisual}\n" +
+    // $"ship_distance_from_target: {Math.Floor(waveRiders[0].distanceFromTarget)}\n" +
+    // $"ship_new_thrust_pct: {waveRiders[0].newThrustPct}\n" +
+    // $"ship_new_thrust_amount: {waveRiders[0].newThrustAmount}\n" +
+    // $"ball_radius: {Math.Floor(ballRadius)}\n";
 
     if (resetRequested && !resetFinished)
     {
@@ -185,7 +282,12 @@ public partial class ShaderWorld : Control
 
       foreach (var rider in waveRiders)
       {
-        ballPositionsAndSizes.Add(new Vector3(rider.GlobalPosition.X, rider.GlobalPosition.Y, ballRadius));
+        var rawScale = rider.GetNode<Sprite2D>("waveRiderSprite").Scale;
+
+        var riderRadius = rawScale.X + rawScale.Y / 2f
+          * (ballRadiusMin + (rider.newThrustPct * (ballRadiusMax - ballRadiusMin)));
+
+        ballPositionsAndSizes.Add(new Vector3(rider.GlobalPosition.X, rider.GlobalPosition.Y, riderRadius));
       }
 
       ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_positions_and_sizes", ballPositionsAndSizes);
@@ -259,5 +361,16 @@ public partial class ShaderWorld : Control
     {
       SpawnWaveRider();
     }
+
+    if (@event.IsActionPressed("despawn_wave_rider"))
+    {
+    }
+  }
+
+  private void _on_change_targets_timeout()
+  {
+    RandomizeTargetsParameters();
   }
 }
+
+

@@ -16,9 +16,9 @@ const float vBarrier = 100.0;
 const float vBarrierWidthHalf = 25.0;
 
 // This has to have a fixed size, for now I'm just setting a
-//   decently large value (50) and only populating the array with
+//   decently large value (100) and only populating the array with
 //   values when they exist. It seems to work so far :fingers-crossed:
-uniform vec3[50] ball_positions_and_sizes;
+uniform vec3[100] ball_positions_and_sizes;
 
 highp float rand(vec2 co)
 {

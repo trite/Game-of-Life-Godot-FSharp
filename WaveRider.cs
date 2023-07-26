@@ -4,7 +4,7 @@ using System;
 public partial class WaveRider : RigidBody2D
 {
   [Export]
-  public Sprite2D? target = null;
+  public pathFollower target = null;
 
   [Export]
   public float maxRotationSpeed = (float)Math.PI / 4.0f;
@@ -107,7 +107,9 @@ public partial class WaveRider : RigidBody2D
   {
     if (target == null)
     {
-      GD.PrintErr("WaveRider: target is null");
+      // TODO: This is null a lot but everything still works?
+      //         Not sure why yet.
+      // GD.PrintErr("WaveRider: target is null");
       return;
     }
 

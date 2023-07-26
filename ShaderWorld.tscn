@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://d13wreuvm1jkh"]
+[gd_scene load_steps=21 format=3 uid="uid://d13wreuvm1jkh"]
 
 [ext_resource type="Script" path="res://ShaderWorld.cs" id="1_da815"]
 [ext_resource type="Material" uid="uid://bwj5f182ja683" path="res://ShaderWorld2.tres" id="2_avkev"]
@@ -8,9 +8,9 @@
 [ext_resource type="Material" uid="uid://dilhpvkxd7h24" path="res://Convolute.tres" id="5_l0fmg"]
 [ext_resource type="Material" uid="uid://dpqhtc1blco4m" path="res://AlphaPass.tres" id="5_udnkw"]
 [ext_resource type="Material" uid="uid://3obhlpcdwjnv" path="res://ColorBlurOnly.tres" id="6_5a17d"]
-[ext_resource type="Texture2D" uid="uid://clcwl4buu58qx" path="res://simple-plus.png" id="6_vpcjs"]
 [ext_resource type="Texture2D" uid="uid://b2ydt4cgssuto" path="res://ship003.png" id="8_brni0"]
 [ext_resource type="Script" path="res://WaveRider.cs" id="8_sqaie"]
+[ext_resource type="PackedScene" uid="uid://d3axin3nt25uw" path="res://target.tscn" id="11_vwe3t"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_uf7dm"]
 viewport_path = NodePath("SimulationContainer/SimulationViewport")
@@ -24,15 +24,30 @@ size = Vector2(400, 2000)
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_2ygl4"]
 friction = 0.0
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_qn00e"]
+radius = 64.0
+
 [sub_resource type="CircleShape2D" id="CircleShape2D_qkhh2"]
+
+[sub_resource type="Curve2D" id="Curve2D_y88sh"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 467, 73, 0, 0, 0, 0, 54, 355, 0, 0, 0, 0, 304, 849, 0, 0, 0, 0, 729, 116, 0, 0, 0, 0, 359, 342, 0, 0, 0, 0, 120, 1161, 0, 0, 0, 0, 616, 1360, 0, 0, 0, 0, 1327, 544, 0, 0, 0, 0, 755, 299, 0, 0, 0, 0, 613, 854, 0, 0, 0, 0, 1495, 1189, 0, 0, 0, 0, 1752, 204, 0, 0, 0, 0, 1296, 181, 0, 0, 0, 0, 1080, 738, 0, 0, 0, 0, 1720, 1224, 0, 0, 0, 0, 2294, 816, 0, 0, 0, 0, 2236, 249, 0, 0, 0, 0, 1770, 70, 0, 0, 0, 0, 1503, 456, 0, 0, 0, 0, 2055, 1139, 0, 0, 0, 0, 2939, 1103, 0, 0, 0, 0, 2844, 461, 0, 0, 0, 0, 2329, 146, 0, 0, 0, 0, 2153, 670, 0, 0, 0, 0, 3209, 1328, 0, 0, 0, 0, 3360, 635, 0, 0, 0, 0, 3048, 121, 0, 0, 0, 0, 1896, 1224, 0, 0, 0, 0, 2713, 1280, 0, 0, 0, 0, 1657, 111, 0, 0, 0, 0, 772, 1270, 0, 0, 0, 0, 1765, 1030, 0, 0, 0, 0, 1203, 231, 0, 0, 0, 0, 465, 75, 0, 0, 0, 0, 467, 73)
+}
+point_count = 35
 
 [sub_resource type="Curve2D" id="Curve2D_un301"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, 430, 333, 0, 0, 0, 0, 1117, 511, 0, 0, 0, 0, 1476, 1088, 0, 0, 0, 0, 2560, 946, 0, 0, 0, 0, 2800, 219, 0, 0, 0, 0, 3200, 639, 0, 0, 0, 0, 2847, 1115, 0, 0, 0, 0, 2322, 311, 0, 0, 0, 0, 1673, 304, 0, 0, 0, 0, 1242, 973, 0, 0, 0, 0, 567, 1101, 0, 0, 0, 0, 261, 760, 0, 0, 0, 0, 430, 333)
+"points": PackedVector2Array(0, 0, 0, 0, 1989, 163, 0, 0, 0, 0, 2387, 617, 0, 0, 0, 0, 2954, 158, 0, 0, 0, 0, 3350, 788, 0, 0, 0, 0, 3279, 1340, 0, 0, 0, 0, 2831, 572, 0, 0, 0, 0, 2418, 1391, 0, 0, 0, 0, 2062, 559, 0, 0, 0, 0, 1503, 1315, 0, 0, 0, 0, 1173, 594, 0, 0, 0, 0, 808, 1330, 0, 0, 0, 0, 452, 574, 0, 0, 0, 0, 183, 1239, 0, 0, 0, 0, 110, 201, 0, 0, 0, 0, 266, 594, 0, 0, 0, 0, 472, 85, 0, 0, 0, 0, 734, 607, 0, 0, 0, 0, 1042, 93, 0, 0, 0, 0, 1243, 569, 0, 0, 0, 0, 1490, 121, 0, 0, 0, 0, 1657, 655, 0, 0, 0, 0, 1989, 163)
 }
-point_count = 13
+point_count = 22
 
-[node name="ShaderWorld" type="Control"]
+[sub_resource type="Curve2D" id="Curve2D_7elqy"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 87, 143, 0, 0, 0, 0, 1631, 181, 0, 0, 0, 0, 2229, 1355, 0, 0, 0, 0, 3398, 746, 0, 0, 0, 0, 3378, 103, 0, 0, 0, 0, 2471, 289, 0, 0, 0, 0, 3368, 1330, 0, 0, 0, 0, 1523, 877, 0, 0, 0, 0, 2909, 405, 0, 0, 0, 0, 1518, 413, 0, 0, 0, 0, 1490, 1287, 0, 0, 0, 0, 608, 337, 0, 0, 0, 0, 1954, 242, 0, 0, 0, 0, 1256, 589, 0, 0, 0, 0, 2327, 824, 0, 0, 0, 0, 1760, 1186, 0, 0, 0, 0, 644, 1305, 0, 0, 0, 0, 180, 919, 0, 0, 0, 0, 991, 236, 0, 0, 0, 0, 641, 975, 0, 0, 0, 0, 1347, 761, 0, 0, 0, 0, 2020, 1232, 0, 0, 0, 0, 2975, 604, 0, 0, 0, 0, 223, 589, 0, 0, 0, 0, 82, 143, 0, 0, 0, 0, 87, 143)
+}
+point_count = 26
+
+[node name="ShaderWorld" type="Control" node_paths=PackedStringArray("targets")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 3440.0
@@ -43,9 +58,21 @@ startingImage = ExtResource("3_i3hd5")
 impulseVal = Vector2(0.25, 0.25)
 intendedSpeed = 2000.0
 ballRadius = 10.0
+ballRadiusMin = 10.0
+ballRadiusMax = 45.0
 ballEnabled = true
-maxFPS = 144
-targetProgressModifier = 100.0
+maxFPS = 60
+targetProgressModifier = 150.0
+waveRiderMinThrustRangeMax = 1000.0
+waveRiderMaxThrustRangeMin = 2000.0
+waveRiderMaxThrustRangeMax = 4000.0
+targets = [NodePath("targetPath1/target11"), NodePath("targetPath1/target12"), NodePath("targetPath1/target13"), NodePath("targetPath2/target21"), NodePath("targetPath2/target22"), NodePath("targetPath2/target23"), NodePath("targetPath3/target31"), NodePath("targetPath3/target32"), NodePath("targetPath3/target33")]
+scaleMin = 0.25
+scaleMax = 1.0
+
+[node name="ChangeTargets" type="Timer" parent="."]
+wait_time = 15.0
+autostart = true
 
 [node name="SimulationContainer" type="SubViewportContainer" parent="."]
 layout_mode = 0
@@ -98,6 +125,7 @@ offset_bottom = 1440.0
 visible = false
 
 [node name="Blur" type="ColorRect" parent="Control/BlurCanvasLayer"]
+visible = false
 material = ExtResource("5_l0fmg")
 offset_right = 3440.0
 offset_bottom = 1440.0
@@ -136,7 +164,7 @@ shape = SubResource("RectangleShape2D_nk6v8")
 position = Vector2(3640, 720)
 shape = SubResource("RectangleShape2D_nk6v8")
 
-[node name="waveRider" type="RigidBody2D" parent="." node_paths=PackedStringArray("target")]
+[node name="waveRider" type="RigidBody2D" parent="."]
 visible = false
 mass = 0.1
 physics_material_override = SubResource("PhysicsMaterial_2ygl4")
@@ -144,7 +172,6 @@ gravity_scale = 0.0
 lock_rotation = true
 linear_damp = 1.0
 script = ExtResource("8_sqaie")
-target = NodePath("../targetPath/targetPathFollow/target")
 maxRotationSpeed = 0.5
 thrust = 1500.0
 maxExtraThrust = 2500.0
@@ -153,11 +180,11 @@ extraThrustAngle = 1.0
 newThrustMin = 1500.0
 newThrustMax = 4000.0
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="waveRider"]
-polygon = PackedVector2Array(-55, 47, -55, 31, -52, 11, -47, 0, -47, -40, 0, -56, 47, -40, 47, 0, 51, 10, 55, 30, 55, 47, 30, 13, 20, -19, 12, -28, -1, -31, -14, -27, -21, -17, -29, 13)
+[node name="waveRiderCollisionBox" type="CollisionShape2D" parent="waveRider"]
+shape = SubResource("CircleShape2D_qn00e")
 disabled = true
 
-[node name="Sprite2D" type="Sprite2D" parent="waveRider"]
+[node name="waveRiderSprite" type="Sprite2D" parent="waveRider"]
 modulate = Color(1, 1, 1, 0.588235)
 texture = ExtResource("8_brni0")
 
@@ -179,14 +206,57 @@ shape = SubResource("CircleShape2D_qkhh2")
 modulate = Color(1, 1, 1, 0.0392157)
 texture = ExtResource("5_4gi82")
 
-[node name="targetPath" type="Path2D" parent="."]
+[node name="targetPath1" type="Path2D" parent="."]
+visible = false
+curve = SubResource("Curve2D_y88sh")
+
+[node name="target11" parent="targetPath1" instance=ExtResource("11_vwe3t")]
+position = Vector2(446.448, 87.0334)
+rotation = 2.5425
+
+[node name="target12" parent="targetPath1" instance=ExtResource("11_vwe3t")]
+position = Vector2(446.448, 87.0334)
+rotation = 2.5425
+
+[node name="target13" parent="targetPath1" instance=ExtResource("11_vwe3t")]
+position = Vector2(446.448, 87.0334)
+rotation = 2.5425
+
+[node name="targetPath2" type="Path2D" parent="."]
+visible = false
 curve = SubResource("Curve2D_un301")
 
-[node name="targetPathFollow" type="PathFollow2D" parent="targetPath"]
-position = Vector2(829.75, 436.574)
-rotation = 0.253523
-progress = 412.95
+[node name="target21" parent="targetPath2" instance=ExtResource("11_vwe3t")]
+position = Vector2(2005.4, 181.71)
+rotation = 0.851031
 
-[node name="target" type="Sprite2D" parent="targetPath/targetPathFollow"]
-rotation = -0.253523
-texture = ExtResource("6_vpcjs")
+[node name="target22" parent="targetPath2" instance=ExtResource("11_vwe3t")]
+position = Vector2(2005.4, 181.71)
+rotation = 0.851031
+
+[node name="target23" parent="targetPath2" instance=ExtResource("11_vwe3t")]
+position = Vector2(2005.4, 181.71)
+rotation = 0.851031
+
+[node name="targetPath3" type="Path2D" parent="."]
+visible = false
+curve = SubResource("Curve2D_7elqy")
+
+[node name="target31" parent="targetPath3" instance=ExtResource("11_vwe3t")]
+position = Vector2(112.039, 143.616)
+rotation = 0.0246064
+
+[node name="target32" parent="targetPath3" instance=ExtResource("11_vwe3t")]
+position = Vector2(112.039, 143.616)
+rotation = 0.0246064
+
+[node name="target33" parent="targetPath3" instance=ExtResource("11_vwe3t")]
+position = Vector2(112.039, 143.616)
+rotation = 0.0246064
+
+[node name="howManyPopup" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[connection signal="timeout" from="ChangeTargets" to="." method="_on_change_targets_timeout"]

@@ -99,7 +99,8 @@ public partial class ShaderWorld : Control
       $"ship_speed: {Math.Floor(waveRiders[0].LinearVelocity.Length())}\n" +
       $"ship_position: {VecFloor(waveRiders[0].GlobalPosition)}\n" +
       $"ship_thrust: {waveRiders[0].currentThrust.Length()}\n" +
-      $"ship_thrust_visual: {waveRiders[0].currentThrustVisual}\n";
+      $"ship_thrust_visual: {waveRiders[0].currentThrustVisual}\n" +
+      $"ship_distance_from_target: {Math.Floor(waveRiders[0].distanceFromTarget)}\n";
     // $"ball_enabled: {ballEnabled}\n" +
     // $"low_speed_x_counter: {lowSpeedXCounter}\n" +
     // $"low_speed_y_counter: {lowSpeedYCounter}\n";

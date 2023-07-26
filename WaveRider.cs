@@ -40,6 +40,14 @@ public partial class WaveRider : RigidBody2D
   [Export]
   public float distanceFromTarget = 0.0f;
 
+
+  // Reworking thruster stuff, the previous one has become terrible
+  [Export]
+  public float extraThrustPotentialNormalized = 0f;
+
+  [Export]
+  public bool extraThrustEnabled = false;
+
   // [Export]
   // public float extraThrustWhenUnderVelocity = 100f;
 
@@ -107,6 +115,15 @@ public partial class WaveRider : RigidBody2D
     //   force *= 2.0f;
     //   // force *= -velocityInTargetDirection * 0.05f * (float)delta;
     // }
+
+    extraThrustPotentialNormalized = normalize(
+      extraThrustMinDistance,
+      extraThrustMaxDistance,
+      GlobalPosition.DistanceTo(target.GlobalPosition));
+
+    extraThrustEnabled = facingDirection.AngleTo(directionToTarget) < extraThrustAngle;
+
+    // TODO: Leaving off here
 
     if ((facingDirection.AngleTo(directionToTarget) < extraThrustAngle)
       && (distanceToTarget > extraThrustMinDistance))

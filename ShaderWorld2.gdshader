@@ -2,18 +2,19 @@ shader_type canvas_item;
 
 uniform sampler2D screen_texture : hint_screen_texture, repeat_disable, filter_nearest;
 
-uniform mat4 global_transform;
+//uniform mat4 global_transform;
 
-uniform vec2 inside_top_left;
-uniform vec2 inside_bottom_right;
-
-uniform vec2 ball_center;
-uniform float ball_radius;
+//uniform vec2 inside_top_left;
+//uniform vec2 inside_bottom_right;
+//
+//uniform vec2 ball_center;
+//uniform float ball_radius;
 
 uniform bool ball_enabled;
 
 const float vBarrier = 100.0;
 const float vBarrierWidthHalf = 25.0;
+uniform bool v_barrier_enabled;
 
 // This has to have a fixed size, for now I'm just setting a
 //   decently large value (100) and only populating the array with
@@ -38,8 +39,6 @@ float getCellContent(vec4 cc) {
 }
 
 int ca_count(in sampler2D tex, vec2 uv, vec2 pixel_size) {
-	vec2 s = pixel_size;
-
 	float modifier;
 	float neighbours = 0.;
 
@@ -57,9 +56,11 @@ int ca_count(in sampler2D tex, vec2 uv, vec2 pixel_size) {
 	return int(neighbours);
 }
 
-int barrier_count(in sampler2D tex, vec2 uv, vec2 pixel_size) {
-	vec2 s = pixel_size;
+bool eq(float a, float b) {
+	return abs(a - b) < 0.0001;
+}
 
+int barrier_count(in sampler2D tex, vec2 uv, vec2 pixel_size) {
 	float modifier;
 	float neighbours = 0.;
 
@@ -88,9 +89,9 @@ int barrier_count(in sampler2D tex, vec2 uv, vec2 pixel_size) {
 	}
 	
 	// Logic for horizontal barrier that only allows travel downward
-	if (below == 3.0) {
+	if (eq(below, 3.0)) {
 		return int(0.0);
-	} else if (below == 1.0 && above == 2.0) {
+	} else if (eq(below, 1.0) && eq(above, 2.0)) {
 		return int(0.0);
 	}
 
@@ -133,12 +134,12 @@ void fragment() {
 	vec2 uv = SCREEN_UV;
 	vec2 sz = SCREEN_PIXEL_SIZE;
 	
-
-	
 	int count;
 	
-	// Create a 10 pixel horizontal band across the screen that restricts travel in one direction
-	if (worldPosition.y >= vBarrier - vBarrierWidthHalf && worldPosition.y < vBarrier + vBarrierWidthHalf) {
+	// Potentially create a horizontal band across the screen that restricts travel in one direction
+	if (v_barrier_enabled
+		&& worldPosition.y >= vBarrier - vBarrierWidthHalf
+		&& worldPosition.y < vBarrier + vBarrierWidthHalf) {
 		count = barrier_count(screen_texture, uv, sz);
 	} else {
 		count = ca_count(screen_texture, uv, sz);
@@ -163,13 +164,13 @@ void fragment() {
 				float col = rand(distance_to_ball_center * uv * 2.);
 			
 				float col_del = smoothstep(0.1, 0.11, col);
-				if (col_del == 0.0) {
+				if (eq(col_del, 0.0)) {
 					COLOR = vec4(vec3(0.0), 1.0);
 				}
 
 				// Turning random cells on at a threshhold
 				float col_add = smoothstep(0.94, 0.95, col);
-				if (col_add == 1.0) {
+				if (eq(col_add, 1.0)) {
 					COLOR = vec4(vec3(1.0), 1.0);
 				}
 			}

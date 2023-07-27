@@ -1,0 +1,6 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://ca884bk2dgj4y"]
+
+[ext_resource type="Shader" path="res://ContinuousWorldShader.gdshader" id="1_gha7s"]
+
+[resource]
+shader = ExtResource("1_gha7s")

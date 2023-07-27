@@ -139,6 +139,7 @@ void fragment() {
 	// TODO: rework this to be cleaner
 	if (scroll_background) {
 		uv.x += sz.x * scroll_background_amount;
+		uv.y += sz.y * scroll_background_amount;
 	}
 	
 	int count;
@@ -176,11 +177,16 @@ void fragment() {
 		}
 	}
 	
-	// Second half of background scroll logic
+	// Second half of background scroll logic - turn right side of screen black to avoid things clinging
 	// TODO: rework this to be cleaner
 	if (scroll_enabled) {
-		float uv_distance = max(scroll_background_amount * sz.x, 2.0 * sz.x);
-		if (SCREEN_UV.x > 1.0 - uv_distance) {
+		float uv_distance_x = max(scroll_background_amount * sz.x, 2.0 * sz.x);
+		if (SCREEN_UV.x > 1.0 - uv_distance_x) {
+			COLOR = vec4(0.0, 0.0, 0.0, 0.0);
+		}
+		
+		float uv_distance_y = max(scroll_background_amount * sz.y, 2.0 * sz.y);
+		if (SCREEN_UV.y > 1.0 - uv_distance_y) {
 			COLOR = vec4(0.0, 0.0, 0.0, 0.0);
 		}
 	}

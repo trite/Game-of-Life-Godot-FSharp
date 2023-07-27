@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Game Of Life Godot F-sharp"
-run/main_scene="res://ContinuousWorld.tscn"
+run/main_scene="res://ShaderWorld.tscn"
 config/features=PackedStringArray("4.1", "C#", "Mobile")
 config/icon="res://icon.svg"
 

@@ -21,11 +21,12 @@ uniform bool v_barrier_enabled;
 //   values when they exist. It seems to work so far :fingers-crossed:
 uniform vec3[100] ball_positions_and_sizes;
 
+uniform bool scroll_background;
+uniform float scroll_background_amount;
+uniform bool scroll_enabled;
+
 highp float rand(vec2 co)
 {
-//  highp float a = 12.9898;
-//  highp float b = 78.233;
-//  highp float c = 43758.5453;
   highp float a = 15.353;
   highp float b = 59.4932;
   highp float c = 1736.295;
@@ -134,6 +135,12 @@ void fragment() {
 	vec2 uv = SCREEN_UV;
 	vec2 sz = SCREEN_PIXEL_SIZE;
 	
+	// First half of background scroll logic
+	// TODO: rework this to be cleaner
+	if (scroll_background) {
+		uv.x += sz.x * scroll_background_amount;
+	}
+	
 	int count;
 	
 	// Potentially create a horizontal band across the screen that restricts travel in one direction
@@ -144,14 +151,6 @@ void fragment() {
 	} else {
 		count = ca_count(screen_texture, uv, sz);
 	}
-	
-//	if (worldPosition.x >= inside_top_left.x
-//		&& worldPosition.y >= inside_top_left.y
-//		&& worldPosition.x < inside_bottom_right.x
-//		&& worldPosition.y < inside_bottom_right.y)
-//	{
-//		// Logic that applies to the inner zone would live here, but that's not what I needed -_-
-//	}
 	
 	COLOR = getColor(textureLod(screen_texture, uv, 0.0), count, TIME);
 	
@@ -175,23 +174,14 @@ void fragment() {
 				}
 			}
 		}
-//		vec2 distance_to_ball_center = (uv / sz) - ball_center;
-//
-//		if (length(distance_to_ball_center) <= ball_radius) {
-//	//		COLOR = vec4(vec3(0.0), 1.0);
-//			float col = rand(distance_to_ball_center * uv * 2.);
-//
-//			// Turning random cells off at a threshhold
-//			float col_del = smoothstep(0.1, 0.11, col);
-//			if (col_del == 0.0) {
-//				COLOR = vec4(vec3(0.0), 1.0);
-//			}
-//
-//			// Turning random cells on at a threshhold
-//			float col_add = smoothstep(0.94, 0.95, col);
-//			if (col_add == 1.0) {
-//				COLOR = vec4(vec3(1.0), 1.0);
-//			}
-//		}
+	}
+	
+	// Second half of background scroll logic
+	// TODO: rework this to be cleaner
+	if (scroll_enabled) {
+		float uv_distance = max(scroll_background_amount * sz.x, 2.0 * sz.x);
+		if (SCREEN_UV.x > 1.0 - uv_distance) {
+			COLOR = vec4(0.0, 0.0, 0.0, 0.0);
+		}
 	}
 }

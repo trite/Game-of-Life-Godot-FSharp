@@ -105,6 +105,16 @@ public partial class ShaderWorld : Control
   [Export]
   public bool vBarrierEnabled = true;
 
+  public bool scrollBackground = false;
+
+  public bool scrollBackgroundJustFired = false;
+
+  [Export]
+  public float scrollBackgroundAmount = 5.0f;
+
+  [Export]
+  public bool scrollBackgroundEnabled = true;
+
   public pathFollower GetRandomTarget(string riderName)
   {
     var result = targets[(int)Math.Floor(rng.RandfRange(0f, targets.Count - 1))];
@@ -235,6 +245,7 @@ public partial class ShaderWorld : Control
       $"Animation running?: {animation_running}\n" +
       $"Thrust generates chaos?: {ballEnabled}\n" +
       $"1-way barrier on?: {vBarrierEnabled}\n" +
+      $"Scroll background?: {scrollBackgroundEnabled}\n" +
       $"FPS (current / limit): {Engine.GetFramesPerSecond()} / {fpsLimitText}\n" +
       $"Wave riders: {waveRiders.Count}\n";
 
@@ -287,12 +298,6 @@ public partial class ShaderWorld : Control
 
     if (game_running)
     {
-      // Not needed anymore
-      // if (waveRiders.Count > 0)
-      // {
-      //   ballRadius = ballRadiusMin + (waveRiders[0].newThrustPct * (ballRadiusMax - ballRadiusMin));
-      // }
-
       var ballPositionsAndSizes = new Array<Vector3>();
 
       foreach (var rider in waveRiders)
@@ -307,6 +312,26 @@ public partial class ShaderWorld : Control
 
       ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_positions_and_sizes", ballPositionsAndSizes);
       ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_enabled", ballEnabled);
+
+      ((ShaderMaterial)textureNode.Material).SetShaderParameter("scroll_background_amount", scrollBackgroundAmount);
+      ((ShaderMaterial)textureNode.Material).SetShaderParameter("scroll_enabled", scrollBackgroundEnabled);
+
+      // Always pass this value on to the shader
+      // ((ShaderMaterial)textureNode.Material).SetShaderParameter("scroll_background", scrollBackground);
+      // ((ShaderMaterial)textureNode.Material).SetShaderParameter("scroll_background", true);
+
+      // Once a true has been passed we want to pass false until the next time one comes along
+      if (scrollBackground)
+      {
+        QueueRedraw();
+      }
+
+      if (scrollBackgroundJustFired)
+      {
+        QueueRedraw();
+        scrollBackgroundJustFired = false;
+      }
+
 
       // These should all be able to go now:
       // ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_radius", ballRadius);
@@ -387,14 +412,82 @@ public partial class ShaderWorld : Control
     {
       vBarrierEnabled = !vBarrierEnabled;
       ((ShaderMaterial)GetNode<TextureRect>("SimulationContainer/SimulationViewport/Simulation").Material)
-        .SetShaderParameter("v_barrier_enabled", vBarrierEnabled);
+      .SetShaderParameter("v_barrier_enabled", vBarrierEnabled);
+    }
+
+    if (@event.IsActionPressed("spawn_multiple_wave_riders"))
+    {
+      for (int i = 0; i < 10; i++)
+      {
+        SpawnWaveRider();
+      }
+    }
+
+    if (@event.IsActionPressed("despawn_multiple_wave_riders"))
+    {
+      if (waveRiders.Count > 0)
+      {
+        for (int i = 0; i < Mathf.Min(10, waveRiders.Count); i++)
+        {
+          DespawnWaveRider();
+        }
+      }
+      else
+      {
+        GD.Print("No wave riders to despawn");
+      }
+    }
+
+    if (@event.IsActionPressed("toggle_scroll"))
+    {
+      scrollBackgroundEnabled = !scrollBackgroundEnabled;
+      if (scrollBackgroundEnabled)
+      {
+        GetNode<Timer>("ScrollBackground").Start();
+      }
+      else
+      {
+        GetNode<Timer>("ScrollBackground").Stop();
+      }
     }
   }
 
-  private void _on_change_targets_timeout()
+  // ChangeTargets timer calls this
+  private void OnChangeTargetsTimeout()
   {
     RandomizeTargetsParameters();
   }
+
+  // ScrollBackground timer calls this
+  private void OnScrollBackgroundTimeout()
+  {
+    // ((ShaderMaterial)GetNode<Simulation>
+    //   ("SimulationContainer/SimulationViewport/Simulation")
+    //   .Material)
+    // .SetShaderParameter("scroll_background", true);
+    scrollBackground = true;
+  }
+
+  public override void _Draw()
+  {
+
+    if (game_running)
+    {
+      ((ShaderMaterial)GetNode<Simulation>
+        ("SimulationContainer/SimulationViewport/Simulation")
+        .Material)
+      .SetShaderParameter("scroll_background", scrollBackground);
+
+      if (scrollBackground)
+      {
+        scrollBackground = false;
+        scrollBackgroundJustFired = true;
+      }
+    }
+
+  }
 }
+
+
 
 

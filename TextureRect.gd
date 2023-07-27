@@ -1,6 +1,7 @@
 extends TextureRect
 
 @export var shader_material: ShaderMaterial;
+@export var scroll_background: bool = false;
 
 var first_pass := true;
 

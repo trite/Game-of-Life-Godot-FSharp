@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://ShaderWorld.cs" id="1_da815"]
 [ext_resource type="Material" uid="uid://bwj5f182ja683" path="res://ShaderWorld2.tres" id="2_avkev"]
 [ext_resource type="Texture2D" uid="uid://mxakh6or1g1" path="res://006-top-line-only.png" id="3_i3hd5"]
-[ext_resource type="Script" path="res://TextureRect.gd" id="4_q3vcx"]
+[ext_resource type="Script" path="res://Simulation.cs" id="4_n4wog"]
 [ext_resource type="Texture2D" uid="uid://b63rn2eo1d44r" path="res://Circle.png" id="5_4gi82"]
 [ext_resource type="Material" uid="uid://dilhpvkxd7h24" path="res://Convolute.tres" id="5_l0fmg"]
 [ext_resource type="Material" uid="uid://dpqhtc1blco4m" path="res://AlphaPass.tres" id="5_udnkw"]
@@ -61,7 +61,7 @@ ballRadius = 10.0
 ballRadiusMin = 10.0
 ballRadiusMax = 45.0
 ballEnabled = true
-maxFPS = 60
+maxFPS = 120
 targetProgressModifier = 150.0
 waveRiderMinThrustRangeMax = 1000.0
 waveRiderMaxThrustRangeMin = 2000.0
@@ -69,9 +69,14 @@ waveRiderMaxThrustRangeMax = 4000.0
 targets = [NodePath("targetPath1/target11"), NodePath("targetPath1/target12"), NodePath("targetPath1/target13"), NodePath("targetPath2/target21"), NodePath("targetPath2/target22"), NodePath("targetPath2/target23"), NodePath("targetPath3/target31"), NodePath("targetPath3/target32"), NodePath("targetPath3/target33")]
 scaleMin = 0.25
 scaleMax = 1.0
+scrollBackgroundAmount = 1.0
 
 [node name="ChangeTargets" type="Timer" parent="."]
 wait_time = 15.0
+autostart = true
+
+[node name="ScrollBackground" type="Timer" parent="."]
+wait_time = 0.01
 autostart = true
 
 [node name="SimulationContainer" type="SubViewportContainer" parent="."]
@@ -90,8 +95,7 @@ render_target_update_mode = 4
 offset_right = 3440.0
 offset_bottom = 1440.0
 texture = ExtResource("3_i3hd5")
-script = ExtResource("4_q3vcx")
-shader_material = ExtResource("2_avkev")
+script = ExtResource("4_n4wog")
 
 [node name="Control" type="Control" parent="."]
 anchors_preset = 0
@@ -259,4 +263,5 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[connection signal="timeout" from="ChangeTargets" to="." method="_on_change_targets_timeout"]
+[connection signal="timeout" from="ChangeTargets" to="." method="OnChangeTargetsTimeout"]
+[connection signal="timeout" from="ScrollBackground" to="." method="OnScrollBackgroundTimeout"]

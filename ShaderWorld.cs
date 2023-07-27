@@ -102,6 +102,9 @@ public partial class ShaderWorld : Control
   [Export]
   public float scaleMax = 0.5f;
 
+  [Export]
+  public bool vBarrierEnabled = true;
+
   public pathFollower GetRandomTarget(string riderName)
   {
     var result = targets[(int)Math.Floor(rng.RandfRange(0f, targets.Count - 1))];
@@ -225,10 +228,16 @@ public partial class ShaderWorld : Control
 
     var textureNode = GetNode<TextureRect>("SimulationContainer/SimulationViewport/Simulation");
 
+    var fpsLimitText = maxFPS == 0 ? "Unlimited" : maxFPS.ToString();
+
     GetNode<Label>("Label").Text =
-      $"game_running: {game_running}\n" +
-      $"animation_running: {animation_running}\n" +
-      $"FPS: {Engine.GetFramesPerSecond()}\n";
+      $"Game running?: {game_running}\n" +
+      $"Animation running?: {animation_running}\n" +
+      $"Thrust generates chaos?: {ballEnabled}\n" +
+      $"1-way barrier on?: {vBarrierEnabled}\n" +
+      $"FPS (current / limit): {Engine.GetFramesPerSecond()} / {fpsLimitText}\n" +
+      $"Wave riders: {waveRiders.Count}\n";
+
     // $"ship_speed: {Math.Floor(waveRiders[0].LinearVelocity.Length())}\n" +
     // $"ship_position: {VecFloor(waveRiders[0].GlobalPosition)}\n" +
     // $"ship_thrust: {waveRiders[0].currentThrust.Length()}\n" +
@@ -262,7 +271,9 @@ public partial class ShaderWorld : Control
     if (game_running && !animation_running)
     {
       textureNode.Material = shaderMaterial;
-      ((ShaderMaterial)textureNode.Material).SetShaderParameter("global_transform", GetGlobalTransform());
+
+      // This shouldn't be needed anymore
+      // ((ShaderMaterial)textureNode.Material).SetShaderParameter("global_transform", GetGlobalTransform());
 
       animation_running = true;
     }
@@ -276,7 +287,11 @@ public partial class ShaderWorld : Control
 
     if (game_running)
     {
-      ballRadius = ballRadiusMin + (waveRiders[0].newThrustPct * (ballRadiusMax - ballRadiusMin));
+      // Not needed anymore
+      // if (waveRiders.Count > 0)
+      // {
+      //   ballRadius = ballRadiusMin + (waveRiders[0].newThrustPct * (ballRadiusMax - ballRadiusMin));
+      // }
 
       var ballPositionsAndSizes = new Array<Vector3>();
 
@@ -291,11 +306,12 @@ public partial class ShaderWorld : Control
       }
 
       ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_positions_and_sizes", ballPositionsAndSizes);
-
-      ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_radius", ballRadius);
-      // ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_center", GetNode<RigidBody2D>("RigidBody2D").GlobalPosition);
-      ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_center", waveRiders[0].GlobalPosition);
       ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_enabled", ballEnabled);
+
+      // These should all be able to go now:
+      // ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_radius", ballRadius);
+      // // ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_center", GetNode<RigidBody2D>("RigidBody2D").GlobalPosition);
+      // ((ShaderMaterial)textureNode.Material).SetShaderParameter("ball_center", waveRiders[0].GlobalPosition);
     }
   }
 
@@ -364,6 +380,14 @@ public partial class ShaderWorld : Control
 
     if (@event.IsActionPressed("despawn_wave_rider"))
     {
+      DespawnWaveRider();
+    }
+
+    if (@event.IsActionPressed("vbarrier_toggle"))
+    {
+      vBarrierEnabled = !vBarrierEnabled;
+      ((ShaderMaterial)GetNode<TextureRect>("SimulationContainer/SimulationViewport/Simulation").Material)
+        .SetShaderParameter("v_barrier_enabled", vBarrierEnabled);
     }
   }
 

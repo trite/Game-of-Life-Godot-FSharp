@@ -241,12 +241,12 @@ public partial class ShaderWorld : Control
     var fpsLimitText = maxFPS == 0 ? "Unlimited" : maxFPS.ToString();
 
     GetNode<Label>("Label").Text =
-      $"Game running?: {game_running}\n" +
+      $"FPS and simulation run rate (current / limit): {Engine.GetFramesPerSecond()} / {fpsLimitText}\n" +
+      $"Game running? (ENTER): {game_running}\n" +
       $"Animation running?: {animation_running}\n" +
-      $"Thrust generates chaos?: {ballEnabled}\n" +
-      $"1-way barrier on?: {vBarrierEnabled}\n" +
-      $"Scroll background?: {scrollBackgroundEnabled}\n" +
-      $"FPS (current / limit): {Engine.GetFramesPerSecond()} / {fpsLimitText}\n" +
+      $"Thrust generates chaos? (E) : {ballEnabled}\n" +
+      $"1-way barrier on? (V) : {vBarrierEnabled}\n" +
+      $"Scroll background? (Z): {scrollBackgroundEnabled}\n" +
       $"Wave riders: {waveRiders.Count}\n";
 
     // $"ship_speed: {Math.Floor(waveRiders[0].LinearVelocity.Length())}\n" +
@@ -417,7 +417,7 @@ public partial class ShaderWorld : Control
 
     if (@event.IsActionPressed("spawn_multiple_wave_riders"))
     {
-      for (int i = 0; i < 10; i++)
+      for (int i = 0; i < 9; i++)
       {
         SpawnWaveRider();
       }
@@ -427,7 +427,7 @@ public partial class ShaderWorld : Control
     {
       if (waveRiders.Count > 0)
       {
-        for (int i = 0; i < Mathf.Min(10, waveRiders.Count); i++)
+        for (int i = 0; i < Mathf.Min(9, waveRiders.Count - 1); i++)
         {
           DespawnWaveRider();
         }

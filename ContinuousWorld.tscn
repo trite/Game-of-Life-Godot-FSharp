@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://ContinuousWorld.cs" id="1_ek6kq"]
 [ext_resource type="Material" uid="uid://ca884bk2dgj4y" path="res://ContinuousWorldShader.tres" id="1_lj85t"]
-[ext_resource type="Texture2D" uid="uid://mxakh6or1g1" path="res://006-top-line-only.png" id="1_uttna"]
+[ext_resource type="Texture2D" uid="uid://b3mntmd53ido7" path="res://004-what-fresh-hell-is-this.png" id="3_cmyla"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_8hl5g"]
 viewport_path = NodePath("SimViewportContainer/SimViewport")
@@ -16,6 +16,8 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ek6kq")
 shaderMaterial = ExtResource("1_lj85t")
+alivenessFuncCurveCenter = 0.5
+alivenessFuncCurveStdev = 0.25
 
 [node name="SimViewportContainer" type="SubViewportContainer" parent="."]
 layout_mode = 0
@@ -32,7 +34,7 @@ render_target_update_mode = 4
 [node name="Simulation" type="TextureRect" parent="SimViewportContainer/SimViewport"]
 offset_right = 40.0
 offset_bottom = 40.0
-texture = ExtResource("1_uttna")
+texture = ExtResource("3_cmyla")
 
 [node name="Display" type="TextureRect" parent="."]
 layout_mode = 0

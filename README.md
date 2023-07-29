@@ -40,6 +40,19 @@ Planned steps as of now:
 8) HSL to RGB conversion
 9) set new RGB value to cell
 
+Using a 1-dimensional array for the kernel to start. This is the 49 element array we'll use at first:
+
+```
+[
+  0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0,
+  0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0,
+  1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+  1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0,
+  1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+  0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0,
+  0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0
+]
+```
 
 # Ideas for things to do
 

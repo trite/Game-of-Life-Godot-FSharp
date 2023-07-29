@@ -61,7 +61,7 @@ ballRadius = 10.0
 ballRadiusMin = 10.0
 ballRadiusMax = 45.0
 ballEnabled = true
-maxFPS = 60
+maxFPS = 300
 targetProgressModifier = 150.0
 waveRiderMinThrustRangeMax = 1000.0
 waveRiderMaxThrustRangeMin = 2000.0
@@ -76,7 +76,7 @@ wait_time = 15.0
 autostart = true
 
 [node name="ScrollBackground" type="Timer" parent="."]
-wait_time = 0.01
+wait_time = 0.025
 autostart = true
 
 [node name="SimulationContainer" type="SubViewportContainer" parent="."]
@@ -266,13 +266,13 @@ offset_bottom = 40.0
 [node name="DisplayText" type="Label" parent="."]
 visible = false
 layout_mode = 0
-offset_left = 381.0
-offset_top = 280.0
-offset_right = 3032.0
-offset_bottom = 1106.0
+offset_right = 3440.0
+offset_bottom = 1440.0
 theme_override_colors/font_color = Color(0.682353, 0.835294, 0.752941, 0.305882)
-theme_override_font_sizes/font_size = 200
-text = "Stream starting soon!"
+theme_override_font_sizes/font_size = 225
+text = "Stream
+starting
+soon!"
 horizontal_alignment = 1
 vertical_alignment = 1
 

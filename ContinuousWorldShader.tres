@@ -4,3 +4,9 @@
 
 [resource]
 shader = ExtResource("1_gha7s")
+shader_parameter/kernel = null
+shader_parameter/kernel_size = null
+shader_parameter/kernel_sum = null
+shader_parameter/aliveness_func_curve_peak = null
+shader_parameter/aliveness_func_curve_center = null
+shader_parameter/aliveness_func_curve_stdev = null

@@ -1,5 +1,6 @@
 using Godot;
-using System;
+using Godot.Collections;
+
 
 public partial class ContinuousWorld : Control
 {
@@ -14,11 +15,47 @@ public partial class ContinuousWorld : Control
     Paused
   }
 
+  [Export]
+  public Array<float> kernel = new() {
+    0f, 0f, 1f, 1f, 1f, 0f, 0f,
+    0f, 1f, 1f, 1f, 1f, 1f, 0f,
+    1f, 1f, 1f, 1f, 1f, 1f, 1f,
+    1f, 1f, 1f, 0f, 1f, 1f, 1f,
+    1f, 1f, 1f, 1f, 1f, 1f, 1f,
+    0f, 1f, 1f, 1f, 1f, 1f, 0f,
+    0f, 0f, 1f, 1f, 1f, 0f, 0f
+  };
+
+  [Export]
+  public int kernelSize = 7;
+
+  [Export]
+  public float alivenessFuncCurvePeak = 1f;
+
+  [Export]
+  public float alivenessFuncCurveCenter = 0.375f;
+
+  [Export]
+  public float alivenessFuncCurveStdev = 0.125f;
+
   public SimulationState simulationState = SimulationState.Paused;
 
   // Called when the node enters the scene tree for the first time.
   public override void _Ready()
   {
+    var kernelSum = 0f;
+
+    foreach (var value in kernel)
+    {
+      kernelSum += value;
+    }
+
+    shaderMaterial?.SetShaderParameter("kernel", kernel);
+    shaderMaterial?.SetShaderParameter("kernel_size", kernelSize);
+    shaderMaterial?.SetShaderParameter("kernel_sum", kernelSum);
+    shaderMaterial?.SetShaderParameter("aliveness_func_curve_peak", alivenessFuncCurvePeak);
+    shaderMaterial?.SetShaderParameter("aliveness_func_curve_center", alivenessFuncCurveCenter);
+    shaderMaterial?.SetShaderParameter("aliveness_func_curve_stdev", alivenessFuncCurveStdev);
   }
 
   public void RunRequested()

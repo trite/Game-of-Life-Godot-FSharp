@@ -83,4 +83,5 @@ toggle_scroll={
 
 [rendering]
 
-renderer/rendering_method="gl_compatibility"
+renderer/rendering_method="mobile"
+renderer/rendering_method.web="mobile"

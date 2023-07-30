@@ -1,16 +1,16 @@
-[gd_scene load_steps=21 format=3 uid="uid://d13wreuvm1jkh"]
+[gd_scene load_steps=21 format=3 uid="uid://d1r4i05o7r0ag"]
 
-[ext_resource type="Script" path="res://ShaderWorld.cs" id="1_da815"]
-[ext_resource type="Material" uid="uid://bwj5f182ja683" path="res://ShaderWorld2.tres" id="2_avkev"]
-[ext_resource type="Texture2D" uid="uid://mxakh6or1g1" path="res://006-top-line-only.png" id="3_i3hd5"]
-[ext_resource type="Script" path="res://Simulation.cs" id="4_n4wog"]
-[ext_resource type="Texture2D" uid="uid://b63rn2eo1d44r" path="res://Circle.png" id="5_4gi82"]
-[ext_resource type="Material" uid="uid://dilhpvkxd7h24" path="res://Convolute.tres" id="5_l0fmg"]
-[ext_resource type="Material" uid="uid://dpqhtc1blco4m" path="res://AlphaPass.tres" id="5_udnkw"]
-[ext_resource type="Material" uid="uid://3obhlpcdwjnv" path="res://ColorBlurOnly.tres" id="6_5a17d"]
-[ext_resource type="Texture2D" uid="uid://b2ydt4cgssuto" path="res://ship003.png" id="8_brni0"]
-[ext_resource type="Script" path="res://WaveRider.cs" id="8_sqaie"]
-[ext_resource type="PackedScene" uid="uid://d3axin3nt25uw" path="res://target.tscn" id="11_vwe3t"]
+[ext_resource type="Script" path="res://ShaderWorld.cs" id="1_h2th0"]
+[ext_resource type="Material" uid="uid://bwj5f182ja683" path="res://assets/godot/ShaderWorld2.tres" id="2_rud3u"]
+[ext_resource type="Texture2D" uid="uid://mxakh6or1g1" path="res://assets/images/starting_images/006-top-line-only.png" id="3_jnsbn"]
+[ext_resource type="Script" path="res://Simulation.cs" id="4_5lqa1"]
+[ext_resource type="Material" uid="uid://dpqhtc1blco4m" path="res://assets/godot/AlphaPass.tres" id="5_7tjjj"]
+[ext_resource type="Material" uid="uid://3obhlpcdwjnv" path="res://assets/godot/ColorBlurOnly.tres" id="6_g1rfu"]
+[ext_resource type="Material" uid="uid://dilhpvkxd7h24" path="res://assets/godot/Convolute.tres" id="7_kh1x5"]
+[ext_resource type="Script" path="res://WaveRider.cs" id="8_syrw1"]
+[ext_resource type="Texture2D" uid="uid://b2ydt4cgssuto" path="res://assets/images/ships/waveRider.png" id="9_0ap6d"]
+[ext_resource type="Texture2D" uid="uid://b63rn2eo1d44r" path="res://assets/images/other/Circle.png" id="10_7vy3o"]
+[ext_resource type="PackedScene" uid="uid://d3axin3nt25uw" path="res://target.tscn" id="11_43eem"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_uf7dm"]
 viewport_path = NodePath("SimulationContainer/SimulationViewport")
@@ -52,9 +52,9 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 3440.0
 offset_bottom = 1440.0
-script = ExtResource("1_da815")
-shaderMaterial = ExtResource("2_avkev")
-startingImage = ExtResource("3_i3hd5")
+script = ExtResource("1_h2th0")
+shaderMaterial = ExtResource("2_rud3u")
+startingImage = ExtResource("3_jnsbn")
 impulseVal = Vector2(0.25, 0.25)
 intendedSpeed = 2000.0
 ballRadius = 10.0
@@ -94,8 +94,8 @@ render_target_update_mode = 4
 [node name="Simulation" type="TextureRect" parent="SimulationContainer/SimulationViewport"]
 offset_right = 3440.0
 offset_bottom = 1440.0
-texture = ExtResource("3_i3hd5")
-script = ExtResource("4_n4wog")
+texture = ExtResource("3_jnsbn")
+script = ExtResource("4_5lqa1")
 
 [node name="Control" type="Control" parent="."]
 anchors_preset = 0
@@ -113,7 +113,7 @@ expand_mode = 3
 visible = false
 
 [node name="AlphaPass" type="ColorRect" parent="Control/AlphaPassLayer"]
-material = ExtResource("5_udnkw")
+material = ExtResource("5_7tjjj")
 offset_right = 3440.0
 offset_bottom = 1440.0
 
@@ -121,7 +121,7 @@ offset_bottom = 1440.0
 visible = false
 
 [node name="ColorBlurOnly" type="ColorRect" parent="Control/ColurBlurOnlyLayer"]
-material = ExtResource("6_5a17d")
+material = ExtResource("6_g1rfu")
 offset_right = 3440.0
 offset_bottom = 1440.0
 
@@ -130,7 +130,7 @@ visible = false
 
 [node name="Blur" type="ColorRect" parent="Control/BlurCanvasLayer"]
 visible = false
-material = ExtResource("5_l0fmg")
+material = ExtResource("7_kh1x5")
 offset_right = 3440.0
 offset_bottom = 1440.0
 
@@ -175,7 +175,7 @@ physics_material_override = SubResource("PhysicsMaterial_2ygl4")
 gravity_scale = 0.0
 lock_rotation = true
 linear_damp = 1.0
-script = ExtResource("8_sqaie")
+script = ExtResource("8_syrw1")
 maxRotationSpeed = 0.5
 thrust = 1500.0
 maxExtraThrust = 2500.0
@@ -190,7 +190,7 @@ disabled = true
 
 [node name="waveRiderSprite" type="Sprite2D" parent="waveRider"]
 modulate = Color(1, 1, 1, 0.588235)
-texture = ExtResource("8_brni0")
+texture = ExtResource("9_0ap6d")
 
 [node name="BallRigidBody" type="RigidBody2D" parent="."]
 visible = false
@@ -208,21 +208,21 @@ shape = SubResource("CircleShape2D_qkhh2")
 
 [node name="BallSprite" type="Sprite2D" parent="BallRigidBody"]
 modulate = Color(1, 1, 1, 0.0392157)
-texture = ExtResource("5_4gi82")
+texture = ExtResource("10_7vy3o")
 
 [node name="targetPath1" type="Path2D" parent="."]
 visible = false
 curve = SubResource("Curve2D_y88sh")
 
-[node name="target11" parent="targetPath1" instance=ExtResource("11_vwe3t")]
+[node name="target11" parent="targetPath1" instance=ExtResource("11_43eem")]
 position = Vector2(446.448, 87.0334)
 rotation = 2.5425
 
-[node name="target12" parent="targetPath1" instance=ExtResource("11_vwe3t")]
+[node name="target12" parent="targetPath1" instance=ExtResource("11_43eem")]
 position = Vector2(446.448, 87.0334)
 rotation = 2.5425
 
-[node name="target13" parent="targetPath1" instance=ExtResource("11_vwe3t")]
+[node name="target13" parent="targetPath1" instance=ExtResource("11_43eem")]
 position = Vector2(446.448, 87.0334)
 rotation = 2.5425
 
@@ -230,15 +230,15 @@ rotation = 2.5425
 visible = false
 curve = SubResource("Curve2D_un301")
 
-[node name="target21" parent="targetPath2" instance=ExtResource("11_vwe3t")]
+[node name="target21" parent="targetPath2" instance=ExtResource("11_43eem")]
 position = Vector2(2005.4, 181.71)
 rotation = 0.851031
 
-[node name="target22" parent="targetPath2" instance=ExtResource("11_vwe3t")]
+[node name="target22" parent="targetPath2" instance=ExtResource("11_43eem")]
 position = Vector2(2005.4, 181.71)
 rotation = 0.851031
 
-[node name="target23" parent="targetPath2" instance=ExtResource("11_vwe3t")]
+[node name="target23" parent="targetPath2" instance=ExtResource("11_43eem")]
 position = Vector2(2005.4, 181.71)
 rotation = 0.851031
 
@@ -246,22 +246,17 @@ rotation = 0.851031
 visible = false
 curve = SubResource("Curve2D_7elqy")
 
-[node name="target31" parent="targetPath3" instance=ExtResource("11_vwe3t")]
+[node name="target31" parent="targetPath3" instance=ExtResource("11_43eem")]
 position = Vector2(112.039, 143.616)
 rotation = 0.0246064
 
-[node name="target32" parent="targetPath3" instance=ExtResource("11_vwe3t")]
+[node name="target32" parent="targetPath3" instance=ExtResource("11_43eem")]
 position = Vector2(112.039, 143.616)
 rotation = 0.0246064
 
-[node name="target33" parent="targetPath3" instance=ExtResource("11_vwe3t")]
+[node name="target33" parent="targetPath3" instance=ExtResource("11_43eem")]
 position = Vector2(112.039, 143.616)
 rotation = 0.0246064
-
-[node name="howManyPopup" type="Control" parent="."]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
 
 [node name="DisplayText" type="Label" parent="."]
 visible = false

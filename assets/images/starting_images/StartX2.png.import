@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dpvhtqb5378p3"
-path="res://.godot/imported/001-many-glider-guns.png-801aab947d7c35c5a6953dc751c84719.ctex"
+uid="uid://basqwuodbovss"
+path="res://.godot/imported/StartX2.png-826628dae78a91c23cb82e289f6edaf6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://001-many-glider-guns.png"
-dest_files=["res://.godot/imported/001-many-glider-guns.png-801aab947d7c35c5a6953dc751c84719.ctex"]
+source_file="res://assets/images/starting_images/StartX2.png"
+dest_files=["res://.godot/imported/StartX2.png-826628dae78a91c23cb82e289f6edaf6.ctex"]
 
 [params]
 

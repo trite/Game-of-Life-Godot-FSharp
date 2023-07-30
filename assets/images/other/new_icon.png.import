@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://mld7qa7d5l4n"
-path="res://.godot/imported/003-top-line-glider-guns.png-c301365d26fa9b200c19a0f690d52fb4.ctex"
+uid="uid://bco2xej0ywi88"
+path="res://.godot/imported/new_icon.png-c1cbd9734d93d9fab833eac33d60bfc2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://003-top-line-glider-guns.png"
-dest_files=["res://.godot/imported/003-top-line-glider-guns.png-c301365d26fa9b200c19a0f690d52fb4.ctex"]
+source_file="res://assets/images/other/new_icon.png"
+dest_files=["res://.godot/imported/new_icon.png-c1cbd9734d93d9fab833eac33d60bfc2.ctex"]
 
 [params]
 

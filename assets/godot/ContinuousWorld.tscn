@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://du85ggfh5tgqs"]
 
-[ext_resource type="Script" path="res://ContinuousWorld.cs" id="1_ek6kq"]
-[ext_resource type="Material" uid="uid://ca884bk2dgj4y" path="res://ContinuousWorldShader.tres" id="1_lj85t"]
-[ext_resource type="Texture2D" uid="uid://b3mntmd53ido7" path="res://004-what-fresh-hell-is-this.png" id="3_cmyla"]
+[ext_resource type="Script" path="res://ContinuousWorld.cs" id="1_0a3aa"]
+[ext_resource type="Material" uid="uid://ca884bk2dgj4y" path="res://assets/godot/ContinuousWorldShader.tres" id="2_gy01j"]
+[ext_resource type="Texture2D" uid="uid://b3mntmd53ido7" path="res://assets/images/starting_images/004-what-fresh-hell-is-this.png" id="3_i5bn8"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_8hl5g"]
 viewport_path = NodePath("SimViewportContainer/SimViewport")
@@ -14,8 +14,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_ek6kq")
-shaderMaterial = ExtResource("1_lj85t")
+script = ExtResource("1_0a3aa")
+shaderMaterial = ExtResource("2_gy01j")
 alivenessFuncCurveCenter = 0.5
 alivenessFuncCurveStdev = 0.25
 
@@ -34,7 +34,7 @@ render_target_update_mode = 4
 [node name="Simulation" type="TextureRect" parent="SimViewportContainer/SimViewport"]
 offset_right = 40.0
 offset_bottom = 40.0
-texture = ExtResource("3_cmyla")
+texture = ExtResource("3_i5bn8")
 
 [node name="Display" type="TextureRect" parent="."]
 layout_mode = 0

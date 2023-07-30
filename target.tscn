@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://d3axin3nt25uw"]
 
 [ext_resource type="Script" path="res://pathFollower.cs" id="1_ev3vp"]
-[ext_resource type="Texture2D" uid="uid://clcwl4buu58qx" path="res://simple-plus.png" id="2_sspf0"]
+[ext_resource type="Texture2D" uid="uid://clcwl4buu58qx" path="res://assets/images/other/simple-plus.png" id="2_sspf0"]
 
 [node name="targetFollow" type="PathFollow2D"]
 position = Vector2(454.081, 339.239)

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://8evquunrt6q5"
-path="res://.godot/imported/002-many-glider-guns.png-ef09dc69c0c4a19e8aceda5148c38068.ctex"
+uid="uid://b3mntmd53ido7"
+path="res://.godot/imported/004-what-fresh-hell-is-this.png-aeaeda68efddf2352407305bfe804a93.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://002-many-glider-guns.png"
-dest_files=["res://.godot/imported/002-many-glider-guns.png-ef09dc69c0c4a19e8aceda5148c38068.ctex"]
+source_file="res://assets/images/starting_images/004-what-fresh-hell-is-this.png"
+dest_files=["res://.godot/imported/004-what-fresh-hell-is-this.png-aeaeda68efddf2352407305bfe804a93.ctex"]
 
 [params]
 

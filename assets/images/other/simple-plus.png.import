@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://mxakh6or1g1"
-path="res://.godot/imported/006-top-line-only.png-59c6b4d207ffdce8a05c92985dc16ee5.ctex"
+uid="uid://clcwl4buu58qx"
+path="res://.godot/imported/simple-plus.png-8fb19b23c7c420b407e57900aa294ee6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://006-top-line-only.png"
-dest_files=["res://.godot/imported/006-top-line-only.png-59c6b4d207ffdce8a05c92985dc16ee5.ctex"]
+source_file="res://assets/images/other/simple-plus.png"
+dest_files=["res://.godot/imported/simple-plus.png-8fb19b23c7c420b407e57900aa294ee6.ctex"]
 
 [params]
 

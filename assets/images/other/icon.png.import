@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b3mntmd53ido7"
-path="res://.godot/imported/004-what-fresh-hell-is-this.png-7fd79a2c696083adaa6c3c68c43772a3.ctex"
+uid="uid://cb2j3ys4foo6m"
+path="res://.godot/imported/icon.png-278f1fdc167745c0e1b4720ebbaa48b5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://004-what-fresh-hell-is-this.png"
-dest_files=["res://.godot/imported/004-what-fresh-hell-is-this.png-7fd79a2c696083adaa6c3c68c43772a3.ctex"]
+source_file="res://assets/images/other/icon.png"
+dest_files=["res://.godot/imported/icon.png-278f1fdc167745c0e1b4720ebbaa48b5.ctex"]
 
 [params]
 

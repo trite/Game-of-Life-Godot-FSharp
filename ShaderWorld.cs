@@ -2,7 +2,7 @@ using Godot;
 using Godot.Collections;
 using System;
 using System.Collections.Generic;
-
+using System.Runtime.Intrinsics.Arm;
 
 public partial class ShaderWorld : Control
 {
@@ -115,6 +115,8 @@ public partial class ShaderWorld : Control
   [Export]
   public bool scrollBackgroundEnabled = true;
 
+  public RenderingDevice? renderingDevice = null;
+
   public pathFollower GetRandomTarget(string riderName)
   {
     var result = targets[(int)Math.Floor(rng.RandfRange(0f, targets.Count - 1))];
@@ -189,6 +191,50 @@ public partial class ShaderWorld : Control
 
   public override void _Ready()
   {
+    renderingDevice = RenderingServer.CreateLocalRenderingDevice();
+
+    var shaderFile = GD.Load<RDShaderFile>("res://compute_shader_simulation.glsl");
+    var shaderBytecode = shaderFile.GetSpirV();
+    var shader = renderingDevice.ShaderCreateFromSpirV(shaderBytecode);
+
+
+    // Prepare our data. We use floats in the shader, so we need 32 bit.
+    var input = new float[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+    var inputBytes = new byte[input.Length * sizeof(float)];
+    Buffer.BlockCopy(input, 0, inputBytes, 0, inputBytes.Length);
+
+    // Create a storage buffer that can hold our float values.
+    // Each float has 4 bytes (32 bit) so 10 x 4 = 40 bytes
+    var buffer = renderingDevice.StorageBufferCreate((uint)inputBytes.Length, inputBytes);
+
+    // Create a uniform to assign the buffer to the rendering device
+    var uniform = new RDUniform
+    {
+      UniformType = RenderingDevice.UniformType.StorageBuffer,
+      Binding = 0
+    };
+    uniform.AddId(buffer);
+    var uniformSet = renderingDevice.UniformSetCreate(new Array<RDUniform> { uniform }, shader, 0);
+
+    // Create a compute pipeline
+    var pipeline = renderingDevice.ComputePipelineCreate(shader);
+    var computeList = renderingDevice.ComputeListBegin();
+    renderingDevice.ComputeListBindComputePipeline(computeList, pipeline);
+    renderingDevice.ComputeListBindUniformSet(computeList, uniformSet, 0);
+    renderingDevice.ComputeListDispatch(computeList, xGroups: 5, yGroups: 1, zGroups: 1);
+    renderingDevice.ComputeListEnd();
+
+    // Submit to GPU and wait for sync
+    renderingDevice.Submit();
+    renderingDevice.Sync();
+
+    // Read back the data from the buffers
+    var outputBytes = renderingDevice.BufferGetData(buffer);
+    var output = new float[input.Length];
+    Buffer.BlockCopy(outputBytes, 0, output, 0, outputBytes.Length);
+    GD.Print("Input: ", string.Join(", ", input));
+    GD.Print("Output: ", string.Join(", ", output));
+
     // GetNode<RigidBody2D>("RigidBody2D").ApplyImpulse(impulseVal);
 
     // targetPathFollow = GetNode<PathFollow2D>("targetPath/targetPathFollow");

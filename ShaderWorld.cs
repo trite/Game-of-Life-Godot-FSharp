@@ -59,7 +59,7 @@ public partial class ShaderWorld : Control
 
   public PathFollow2D? targetPathFollow = null;
 
-  public RandomNumberGenerator rng = new RandomNumberGenerator();
+  public RandomNumberGenerator rng = new();
 
   [Export]
   public float waveRiderMinThrustRangeMin = 500f;
@@ -264,9 +264,7 @@ public partial class ShaderWorld : Control
   }
 
   public string VecFloor(Vector2 vec)
-  {
-    return $"({Math.Floor(vec.X)}, {Math.Floor(vec.X)})";
-  }
+    => $"({Math.Floor(vec.X)}, {Math.Floor(vec.X)})";
 
   public override void _Process(double delta)
   {
